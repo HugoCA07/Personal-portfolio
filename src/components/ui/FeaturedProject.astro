@@ -1,0 +1,48 @@
+---
+import PixelWorld from '@/components/ui/PixelWorld.astro';
+import SpecSheet from '@/components/ui/SpecSheet.astro';
+import { projectUrl, type Project } from '@/lib/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const { title, summary, specs, stack, status, year, accent } = project.data;
+---
+
+<div data-reveal>
+  <a
+    href={projectUrl(project)}
+    class="featured group relative flex min-h-[38rem] flex-col overflow-hidden rounded-[2rem] text-white shadow-soft sm:min-h-[40rem] lg:min-h-[36rem]"
+    style={`--accent-p:${accent}`}
+  >
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_80%_0%,#1d3b2a_0%,#0a0f0c_55%,#050706_100%)]"></div>
+
+    <!-- Terreno procedural -->
+    <PixelWorld
+      seed={2007}
+      class="absolute inset-x-0 bottom-0 -z-10 h-[46%] w-full opacity-90 transition-transform duration-[1.6s] ease-(--ease-apple) group-hover:scale-[1.03] lg:h-[58%]"
+    />
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-[46%] bg-linear-to-t from-black/60 to-transparent lg:h-[58%]"></div>
+
+    <div class="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:p-14">
+      <div>
+        <p class="font-mono text-[11px] tracking-[0.16em] text-white/50 uppercase">
+          Proyecto destacado · {year} · {status}
+        </p>
+        <h3 class="mt-5 text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">{title}</h3>
+        <p class="mt-5 max-w-lg text-lg leading-relaxed text-white/70">{summary}</p>
+        <p class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-(--accent-p)">
+          Descubrir el proyecto
+          <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+        </p>
+      </div>
+      <div class="hidden self-start rounded-2xl border border-white/10 bg-black/30 p-6 backdrop-blur-md sm:block">
+        <p class="mb-2 font-mono text-[10px] tracking-[0.16em] text-white/45 uppercase">Ficha técnica</p>
+        <SpecSheet specs={specs} tone="inverted" />
+        <p class="mt-4 font-mono text-xs text-white/50">{stack.join(' · ')}</p>
+      </div>
+    </div>
+  </a>
+</div>

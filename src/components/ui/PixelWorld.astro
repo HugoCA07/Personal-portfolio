@@ -1,0 +1,91 @@
+---
+/**
+ * Mini mundo de píxeles generado proceduralmente en build,
+ * como guiño a la generación de terreno de TerraForge.
+ */
+import { seeded } from '@/lib/random';
+
+interface Props {
+  seed?: number;
+  cols?: number;
+  rows?: number;
+  class?: string;
+}
+
+const { seed = 2007, cols = 64, rows = 26, class: className } = Astro.props;
+const rand = seeded(seed);
+const S = 10;
+
+// 1. Altura del terreno: paseo aleatorio suavizado
+const raw: number[] = [];
+let h = rows * 0.42;
+for (let x = 0; x < cols; x++) {
+  h += (rand() - 0.5) * 2.4;
+  h = Math.max(rows * 0.25, Math.min(rows * 0.6, h));
+  raw.push(h);
+}
+const height = raw.map((_, i) => {
+  const w = raw.slice(Math.max(0, i - 2), i + 3);
+  return Math.round(w.reduce((a, b) => a + b, 0) / w.length);
+});
+
+// 2. Cuevas: autómata celular sobre la capa de piedra
+let cave = Array.from({ length: rows }, () => Array.from({ length: cols }, () => rand() < 0.42));
+for (let step = 0; step < 3; step++) {
+  cave = cave.map((row, y) =>
+    row.map((_, x) => {
+      let n = 0;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && cave[y + dy]?.[x + dx]) n++;
+      return n >= 5;
+    }),
+  );
+}
+
+type Tile = { x: number; y: number; c: string };
+const tiles: Tile[] = [];
+const palette = {
+  grass: '#34c759',
+  grassDark: '#248a3d',
+  dirt: '#8e5b34',
+  dirtDark: '#6d4426',
+  stone: '#5b5b63',
+  stoneDark: '#45454c',
+  gold: '#ffd60a',
+  gem: '#64d2ff',
+  trunk: '#6d4426',
+  leaf: '#30d158',
+};
+
+for (let x = 0; x < cols; x++) {
+  const top = height[x];
+  for (let y = top; y < rows; y++) {
+    const depth = y - top;
+    if (depth > 4 && cave[y][x]) continue;
+    let c: string;
+    if (depth === 0) c = rand() > 0.15 ? palette.grass : palette.grassDark;
+    else if (depth < 4) c = rand() > 0.2 ? palette.dirt : palette.dirtDark;
+    else {
+      const r = rand();
+      c = r < 0.025 ? palette.gold : r < 0.04 ? palette.gem : r < 0.3 ? palette.stoneDark : palette.stone;
+    }
+    tiles.push({ x, y, c });
+  }
+  // Árboles
+  if (x > 1 && x < cols - 2 && rand() < 0.09) {
+    const t = 3 + Math.floor(rand() * 2);
+    for (let i = 1; i <= t; i++) tiles.push({ x, y: top - i, c: palette.trunk });
+    for (let dx = -1; dx <= 1; dx++) for (let dy = 0; dy < 2; dy++) tiles.push({ x: x + dx, y: top - t - 1 - dy, c: palette.leaf });
+  }
+}
+---
+
+<svg
+  class={className}
+  viewBox={`0 0 ${cols * S} ${rows * S}`}
+  preserveAspectRatio="xMidYMax slice"
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+>
+  {tiles.map((t) => <rect x={t.x * S} y={t.y * S} width={S} height={S} fill={t.c} />)}
+</svg>

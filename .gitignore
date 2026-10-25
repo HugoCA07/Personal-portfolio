@@ -1,0 +1,36 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# OS / editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# logs extra
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+Thumbs.db
+desktop.ini
+
+# editors
+.idea/
+*.swp
+
+# misc
+*.local
+.cache/
+coverage/

@@ -1,0 +1,22 @@
+---
+/** Ficha técnica estilo "especificaciones de coche". */
+interface Props {
+  specs: { label: string; value: string }[];
+  class?: string;
+  tone?: 'default' | 'inverted';
+}
+
+const { specs, class: className, tone = 'default' } = Astro.props;
+const inverted = tone === 'inverted';
+---
+
+<dl class:list={['grid grid-cols-2 gap-x-6', className]}>
+  {
+    specs.map((s) => (
+      <div class:list={['border-t py-3', inverted ? 'border-white/15' : 'border-line']}>
+        <dt class:list={['font-mono text-[10px] tracking-[0.14em] uppercase', inverted ? 'text-white/45' : 'text-muted']}>{s.label}</dt>
+        <dd class:list={['mt-1 text-sm font-medium', inverted ? 'text-white' : 'text-ink']}>{s.value}</dd>
+      </div>
+    ))
+  }
+</dl>

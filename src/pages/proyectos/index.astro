@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import ProjectCard from '@/components/ui/ProjectCard.astro';
+import { getProjects } from '@/lib/projects';
+
+const groups = [
+  { title: 'Proyectos', items: await getProjects((p) => p.data.category === 'project') },
+  { title: 'Formación · DAW', items: await getProjects((p) => p.data.category === 'course') },
+].filter((g) => g.items.length > 0);
+---
+
+<BaseLayout title="Proyectos" description="Todos los proyectos de Hugo Cruz Aranda: C++, Java, JavaScript, PHP y más.">
+  <Section
+    eyebrow="Proyectos"
+    title="Todo el garaje."
+    intro="Proyectos propios y trabajos del ciclo de Desarrollo de Aplicaciones Web, cada uno con su ficha técnica."
+    class="pt-36 sm:pt-44"
+  >
+    <div class="space-y-20">
+      {
+        groups.map((g) => (
+          <div>
+            <h2 class="eyebrow mb-6" data-reveal>
+              {g.title} · {g.items.length}
+            </h2>
+            <div class="grid gap-5 md:grid-cols-2">
+              {g.items.map((p, i) => (
+                <ProjectCard project={p} delay={(i % 2) * 80} />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+</BaseLayout>

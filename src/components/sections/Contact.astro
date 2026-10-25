@@ -1,0 +1,31 @@
+---
+import { site } from '@/config/site';
+---
+
+<section id="contacto" class="px-5 py-28 sm:px-8 sm:py-40">
+  <div class="mx-auto max-w-4xl text-center" data-reveal>
+    <p class="eyebrow mb-6">Contacto</p>
+    <h2 class="text-[clamp(3rem,11vw,7.5rem)] leading-[0.95] font-semibold tracking-[-0.05em]">
+      <span class="text-gradient">Hablemos.</span>
+    </h2>
+    <p class="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+      Busco colaborar con otras personas en proyectos grandes. Si tienes una idea, una oportunidad o simplemente quieres hablar de código o de coches, escríbeme.
+    </p>
+    <div class="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a
+        href={`mailto:${site.email}`}
+        class="w-full rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-canvas transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98] sm:w-auto"
+      >
+        {site.email}
+      </a>
+      <a
+        href={site.github.url}
+        target="_blank"
+        rel="noopener"
+        class="w-full rounded-full border border-line px-7 py-3.5 text-sm font-medium transition-colors hover:bg-surface-2 sm:w-auto"
+      >
+        GitHub · @{site.github.user}
+      </a>
+    </div>
+  </div>
+</section>

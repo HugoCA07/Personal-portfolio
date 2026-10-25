@@ -1,0 +1,112 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SpecSheet from '@/components/ui/SpecSheet.astro';
+import PixelWorld from '@/components/ui/PixelWorld.astro';
+import { getProjects, projectUrl, type Project } from '@/lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { id: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+
+const { project, next } = Astro.props;
+const { title, summary, specs, stack, status, year, repo, demo, team, accent, category } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={title} description={summary}>
+  <article style={`--accent-p:${accent}`}>
+    <header class="relative overflow-hidden px-5 pt-36 pb-20 sm:px-8 sm:pt-44 sm:pb-28">
+      <div
+        class="absolute inset-0 -z-10 opacity-[0.14] dark:opacity-25"
+        style="background: radial-gradient(70% 60% at 50% 0%, var(--accent-p), transparent 70%)"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="mx-auto max-w-4xl text-center">
+        <a href="/proyectos" class="eyebrow inline-flex items-center gap-2 transition-colors hover:text-ink">← Todos los proyectos</a>
+        <p class="eyebrow mt-10 flex items-center justify-center gap-2">
+          <span class="size-2 rounded-full bg-(--accent-p)"></span>
+          {category === 'course' ? 'Formación' : 'Proyecto'} · {year} · {status}
+        </p>
+        <h1 class="mt-5 text-[clamp(2.75rem,9vw,6rem)] leading-[0.95] font-semibold tracking-[-0.045em] text-balance">{title}</h1>
+        <p class="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{summary}</p>
+        <div class="mt-10 flex flex-wrap justify-center gap-3">
+          {
+            repo && (
+              <a href={repo} target="_blank" rel="noopener" class="rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas transition-transform hover:scale-[1.03]">
+                Ver en GitHub
+              </a>
+            )
+          }
+          {
+            demo && (
+              <a href={demo} target="_blank" rel="noopener" class="rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:bg-surface-2">
+                Ver demo
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    {
+      project.id === 'terraforge' && (
+        <div class="px-5 sm:px-8">
+          <div class="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[radial-gradient(120%_90%_at_70%_0%,#1d3b2a,#050706)] sm:h-80">
+            <PixelWorld seed={42} cols={96} rows={32} class="block h-auto w-full" />
+          </div>
+        </div>
+      )
+    }
+
+    <div class="mx-auto grid max-w-6xl gap-14 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1fr_20rem]">
+      <div class="prose-apple max-w-2xl">
+        <Content />
+      </div>
+      <aside class="space-y-8 lg:sticky lg:top-24 lg:self-start">
+        <div class="card p-6">
+          <p class="eyebrow mb-2">Ficha técnica</p>
+          <SpecSheet specs={[...specs, { label: 'Año', value: String(year) }, { label: 'Estado', value: status }]} />
+        </div>
+        <div>
+          <p class="eyebrow mb-3">Tecnologías</p>
+          <ul class="flex flex-wrap gap-2">
+            {stack.map((s) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-sm">{s}</li>)}
+          </ul>
+        </div>
+        {
+          team && (
+            <div>
+              <p class="eyebrow mb-3">Equipo</p>
+              <ul class="space-y-1 text-sm text-muted">
+                {team.map((t) => <li>{t}</li>)}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+
+    <nav class="border-t border-line px-5 sm:px-8" aria-label="Siguiente proyecto">
+      <a href={projectUrl(next)} class="group mx-auto flex max-w-6xl items-center justify-between gap-6 py-14 sm:py-20">
+        <div>
+          <p class="eyebrow">Siguiente proyecto</p>
+          <p class="mt-3 text-3xl font-semibold tracking-tight sm:text-5xl">{next.data.title}</p>
+        </div>
+        <span class="grid size-14 shrink-0 place-items-center rounded-full bg-surface-2 text-xl transition-all duration-500 group-hover:translate-x-1 group-hover:bg-ink group-hover:text-canvas">
+          →
+        </span>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>

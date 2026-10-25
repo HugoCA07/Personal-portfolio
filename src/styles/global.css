@@ -1,0 +1,278 @@
+@import 'tailwindcss';
+
+/* Modo oscuro controlado por el atributo data-theme en <html> */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- Tokens de diseño ---------- */
+:root {
+  --canvas: #fbfbfd;
+  --surface: #ffffff;
+  --surface-2: #f5f5f7;
+  --ink: #1d1d1f;
+  --muted: #6e6e73;
+  --line: rgb(0 0 0 / 0.08);
+  --accent: #0071e3;
+  --accent-ink: #ffffff;
+  --glass: rgb(251 251 253 / 0.72);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 40px -12px rgb(0 0 0 / 0.12);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --canvas: #000000;
+  --surface: #111113;
+  --surface-2: #1c1c1e;
+  --ink: #f5f5f7;
+  --muted: #a1a1a6;
+  --line: rgb(255 255 255 / 0.1);
+  --accent: #2997ff;
+  --accent-ink: #000000;
+  --glass: rgb(0 0 0 / 0.64);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 40px -12px rgb(0 0 0 / 0.8);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-glass: var(--glass);
+
+  --shadow-soft: var(--shadow);
+  --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+/* ---------- Cielo en tiempo real (hero) ---------- */
+/* data-sky lo fija un script según la hora local del visitante */
+:root,
+[data-sky='day'] {
+  --sky-top: #bcdcf7;
+  --sky-bottom: #eef5fc;
+  --sun: #fff6d6;
+  --sun-glow: rgb(255 236 179 / 0.7);
+  --m-far: #c7d6e6;
+  --m-mid: #9fb3c8;
+  --m-near: #6f8aa3;
+  --snow: #ffffff;
+  --hero-ink: #1d1d1f;
+  --hero-muted: #3a4a5c;
+  --stars: 0;
+  --headlights: 0;
+}
+[data-sky='dawn'] {
+  --sky-top: #f3c9d0;
+  --sky-bottom: #fde8d7;
+  --sun: #ffe3b8;
+  --sun-glow: rgb(255 186 140 / 0.7);
+  --m-far: #e3c3cf;
+  --m-mid: #b99db4;
+  --m-near: #8a7595;
+  --snow: #fff3f0;
+  --hero-ink: #2b1d2a;
+  --hero-muted: #5d4659;
+  --stars: 0.15;
+  --headlights: 0.4;
+}
+[data-sky='sunset'] {
+  --sky-top: #f39a6b;
+  --sky-bottom: #fcd9b6;
+  --sun: #ffd28a;
+  --sun-glow: rgb(255 140 80 / 0.75);
+  --m-far: #d99a8c;
+  --m-mid: #a86a6d;
+  --m-near: #6e4655;
+  --snow: #ffe2cf;
+  --hero-ink: #2a1512;
+  --hero-muted: #5b3530;
+  --stars: 0.1;
+  --headlights: 0.7;
+}
+[data-sky='night'] {
+  --sky-top: #070b1f;
+  --sky-bottom: #1b2350;
+  --sun: #f2f4ff;
+  --sun-glow: rgb(180 196 255 / 0.35);
+  --m-far: #2a3264;
+  --m-mid: #1e2550;
+  --m-near: #141a3b;
+  --snow: #c9d2f5;
+  --hero-ink: #f5f5f7;
+  --hero-muted: #b7bfe0;
+  --stars: 1;
+  --headlights: 1;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+/* Transiciones entre páginas sin JavaScript (View Transitions API) */
+@view-transition {
+  navigation: auto;
+}
+
+/* ---------- Utilidades propias ---------- */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@utility card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+@utility text-gradient {
+  background: linear-gradient(120deg, var(--ink) 30%, color-mix(in oklab, var(--ink) 45%, var(--accent)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Animaciones de aparición ---------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--ease-apple),
+    transform 0.9s var(--ease-apple);
+  transition-delay: var(--delay, 0ms);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Contenido Markdown de los proyectos ---------- */
+.prose-apple {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.prose-apple > * + * {
+  margin-top: 1.25em;
+}
+.prose-apple h2 {
+  margin-top: 2.5em;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.prose-apple > :first-child {
+  margin-top: 0;
+}
+.prose-apple h3 {
+  margin-top: 2em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.prose-apple strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.prose-apple a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-apple ul {
+  list-style: none;
+  padding: 0;
+}
+.prose-apple ul > li {
+  position: relative;
+  padding-left: 1.5em;
+}
+.prose-apple ul > li + li {
+  margin-top: 0.6em;
+}
+.prose-apple ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0.2em;
+  top: 0.72em;
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.prose-apple ul.contains-task-list > li::before {
+  display: none;
+}
+.prose-apple ul.contains-task-list > li {
+  padding-left: 0;
+}
+.prose-apple input[type='checkbox'] {
+  accent-color: var(--accent);
+  margin-right: 0.6em;
+  transform: translateY(1px);
+}
+.prose-apple code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: 0.4em;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.prose-apple em {
+  color: var(--ink);
+}

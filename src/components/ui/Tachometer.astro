@@ -1,0 +1,84 @@
+---
+/**
+ * Cuentarrevoluciones en SVG. La aguja sube cuando el elemento
+ * padre con [data-reveal] recibe la clase .is-visible.
+ */
+interface Props {
+  /** Revoluciones a las que llega la aguja (0–8, en miles). */
+  rpm?: number;
+  label?: string;
+}
+
+const { rpm = 7.4, label = 'Pasión' } = Astro.props;
+const max = 8;
+const start = -225; // grados (0 = derecha), barrido de 270º
+const sweep = 270;
+const angleFor = (v: number) => start + (v / max) * sweep;
+
+const cx = 100;
+const cy = 100;
+const polar = (deg: number, r: number) => {
+  const rad = (deg * Math.PI) / 180;
+  return [+(cx + r * Math.cos(rad)).toFixed(2), +(cy + r * Math.sin(rad)).toFixed(2)];
+};
+const arc = (from: number, to: number, r: number) => {
+  const [x1, y1] = polar(angleFor(from), r);
+  const [x2, y2] = polar(angleFor(to), r);
+  const large = ((to - from) / max) * sweep > 180 ? 1 : 0;
+  return `M${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
+};
+
+const ticks = Array.from({ length: max * 2 + 1 }, (_, i) => i / 2);
+// Ángulo final de la aguja respecto a su posición inicial (apuntando a 0)
+const needleTurn = (rpm / max) * sweep;
+---
+
+<svg viewBox="0 0 200 200" class="tacho w-full" style={`--turn:${needleTurn}deg`} role="img" aria-label={`Cuentarrevoluciones marcando ${rpm} mil rpm`}>
+  <path d={arc(0, max, 84)} fill="none" stroke="var(--line)" stroke-width="2"></path>
+  <path d={arc(6.5, max, 84)} fill="none" stroke="#ff3b30" stroke-width="4" stroke-linecap="round"></path>
+  {
+    ticks.map((t) => {
+      const major = Number.isInteger(t);
+      const [x1, y1] = polar(angleFor(t), major ? 72 : 76);
+      const [x2, y2] = polar(angleFor(t), 80);
+      const [tx, ty] = polar(angleFor(t), 60);
+      return (
+        <>
+          <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={t >= 6.5 ? '#ff3b30' : 'currentColor'} stroke-width={major ? 2 : 1} opacity={major ? 0.9 : 0.4} />
+          {major && (
+            <text x={tx} y={ty} text-anchor="middle" dominant-baseline="central" font-size="11" fill={t >= 7 ? '#ff3b30' : 'currentColor'} class="font-mono" opacity="0.8">
+              {t}
+            </text>
+          )}
+        </>
+      );
+    })
+  }
+  <text x="100" y="134" text-anchor="middle" font-size="8" fill="currentColor" opacity="0.5" class="font-mono" letter-spacing="1.5">RPM ×1000</text>
+  <text x="100" y="152" text-anchor="middle" font-size="13" fill="currentColor" font-weight="600">{label}</text>
+  <g class="needle">
+    <line x1="100" y1="100" x2={polar(angleFor(0), 78)[0]} y2={polar(angleFor(0), 78)[1]} stroke="#ff3b30" stroke-width="2.5" stroke-linecap="round"></line>
+  </g>
+  <circle cx="100" cy="100" r="7" fill="currentColor"></circle>
+  <circle cx="100" cy="100" r="2.5" fill="#ff3b30"></circle>
+</svg>
+
+<style>
+  .needle {
+    transform-origin: 100px 100px;
+    transform: rotate(0deg);
+    transition: transform 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+  }
+  :global(.is-visible) .needle,
+  :global(html:not(.js)) .needle {
+    transform: rotate(var(--turn));
+  }
+  .tacho:hover .needle {
+    animation: rev 0.9s ease-in-out;
+  }
+  @keyframes rev {
+    40% {
+      transform: rotate(calc(var(--turn) + 18deg));
+    }
+  }
+</style>

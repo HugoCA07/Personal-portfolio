@@ -6,7 +6,7 @@ Guía para agentes de IA (y personas) que trabajen en este repositorio.
 
 Portfolio personal de **Hugo Cruz Aranda** (GitHub: `HugoCA07`). Sitio estático hecho con **Astro 7** y **Tailwind CSS 4**. Todo el contenido está en **español**.
 
-Estilo: minimalista tipo Apple (mucho espacio, tipografía grande, pocos colores), con toques propios ligados a sus intereses: informática, paisajes (Suiza, montañas) y coches.
+Estilo: minimalista tipo Apple (mucho espacio, tipografía grande, pocos colores). Sus intereses (informática, paisajes, coches) se mencionan con moderación: **no saturar la web con temática de coches ni referencias a Suiza**.
 
 ## Comandos
 
@@ -28,12 +28,13 @@ src/
 ├── content/projects/*.md   # Un Markdown por proyecto (colección de contenido)
 ├── content.config.ts       # Esquema Zod de la colección `projects`
 ├── lib/                    # Helpers (consultas de proyectos, random con semilla)
-├── layouts/BaseLayout.astro# <head>, SEO, tema, cielo, header/footer, animaciones
+├── assets/                 # Imágenes optimizadas en build (foto del hero)
+├── layouts/BaseLayout.astro# <head>, SEO, tema, header/footer, animaciones
 ├── components/
 │   ├── sections/           # Secciones de la home (Hero, About, Projects, Skills, Journey, Contact)
-│   └── ui/                 # Piezas reutilizables (Section, ProjectCard, SpecSheet, Tachometer, PixelWorld…)
+│   └── ui/                 # Piezas reutilizables (Section, ProjectCard, SpecSheet, PixelWorld…)
 ├── pages/                  # Rutas: /, /proyectos, /proyectos/[id], 404
-└── styles/global.css       # Tokens de diseño, temas claro/oscuro, cielos, utilidades
+└── styles/global.css       # Tokens de diseño, temas claro/oscuro, utilidades
 ```
 
 ## Cómo ampliar
@@ -47,7 +48,8 @@ src/
 
 - Usa los **tokens** de `global.css` (`bg-canvas`, `bg-surface`, `bg-surface-2`, `text-ink`, `text-muted`, `border-line`, `text-accent`) en vez de colores fijos, para que funcionen en claro y oscuro.
 - Modo oscuro: variante `dark:` ligada a `html[data-theme="dark"]` (no a la media query).
-- Cielo del hero: `html[data-sky]` = `dawn | day | sunset | night`, fijado por la hora local. Las variables `--sky-*`, `--m-*`, `--hero-ink` dependen de él.
+- Hero: foto en `src/assets/hero-mountains.jpg` (optimizada con `<Picture>` de `astro:assets`). La sección mide ~185svh con contenido `sticky`; el script fija `--p` (0→1) según el scroll y el CSS anima zoom, recorte redondeado y textos a partir de esa variable. Si cambias la foto, actualiza el crédito en `Hero.astro`.
+- Header: píldora flotante con estilo *liquid glass* (clase `.glass` en `Header.astro`).
 - Animación de aparición: añade `data-reveal` (y opcionalmente `style="--delay:80ms"`). No lo pongas en el mismo elemento que tiene transiciones de hover; envuélvelo.
 - Utilidades propias: `card`, `eyebrow`, `text-gradient`, `prose-apple` (contenido Markdown).
 - Respeta `prefers-reduced-motion` en cualquier animación nueva.
@@ -60,3 +62,8 @@ src/
 - Componentes `.astro` con `interface Props`.
 - Comentarios breves y en español, solo donde aporten.
 - Prettier-style: 2 espacios, comillas simples.
+
+## Git
+
+- Haz commits pequeños y descriptivos (en español) tras cada cambio que funcione, para poder volver a versiones anteriores.
+- Comprueba `npm run build` antes de cada commit.

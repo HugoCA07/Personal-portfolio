@@ -16,7 +16,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={site.lang} data-theme="light" data-sky="day">
+<html lang={site.lang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -35,7 +35,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:locale" content={site.locale.replace('-', '_')} />
     <meta name="twitter:card" content="summary" />
 
-    <!-- Tema y cielo antes del primer pintado para evitar parpadeos -->
+    <!-- Tema antes del primer pintado para evitar parpadeos -->
     <script is:inline>
       (function () {
         var root = document.documentElement;
@@ -44,8 +44,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         try { stored = localStorage.getItem('theme'); } catch (e) {}
         var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         root.dataset.theme = dark ? 'dark' : 'light';
-        var h = new Date().getHours();
-        root.dataset.sky = h >= 6 && h < 9 ? 'dawn' : h >= 9 && h < 18 ? 'day' : h >= 18 && h < 21 ? 'sunset' : 'night';
       })();
     </script>
   </head>

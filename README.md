@@ -2,8 +2,9 @@
 
 Mi portfolio personal, hecho con [Astro](https://astro.build) y [Tailwind CSS](https://tailwindcss.com).
 
-- Cielo del hero en tiempo real según la hora del visitante (amanecer, día, atardecer y noche — pulsa la etiqueta para cambiarlo).
-- Proyectos como colección de contenido en Markdown, con ficha técnica estilo "especificaciones de coche".
+- Hero con fotografía de paisaje y animación ligada al scroll.
+- Header flotante con estilo *liquid glass*.
+- Proyectos como colección de contenido en Markdown, cada uno con su ficha técnica.
 - Modo claro y oscuro, responsive y sin dependencias de JavaScript en cliente.
 
 ## Desarrollo

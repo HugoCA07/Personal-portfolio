@@ -1,175 +1,141 @@
 ---
+import { Picture } from 'astro:assets';
 import { site } from '@/config/site';
-import { seeded } from '@/lib/random';
+import heroImage from '@/assets/hero-mountains.jpg';
 
-// Estrellas generadas en build (siempre las mismas gracias a la semilla)
-const rand = seeded(site.bornYear);
-const stars = Array.from({ length: 90 }, () => ({
-  x: +(rand() * 1440).toFixed(1),
-  y: +(rand() * 340).toFixed(1),
-  r: +(0.4 + rand() * 1.1).toFixed(2),
-  twinkle: rand() > 0.7,
-  delay: +(rand() * 4).toFixed(2),
-}));
-
-const road = 'M-40 590 C 180 562, 330 548, 540 548 S 860 528, 1010 524 S 1300 516, 1480 512';
+// Para cambiar la foto, sustituye src/assets/hero-mountains.jpg y actualiza el crédito.
+const photo = { author: 'Go Wild', url: 'https://unsplash.com/photos/V0yAek6BgGk' };
 ---
 
-<section class="hero relative isolate flex min-h-[100svh] flex-col overflow-hidden" aria-labelledby="hero-title">
-  <!-- Cielo -->
-  <div class="sky absolute inset-0 -z-20" aria-hidden="true"></div>
-
-  <!-- Texto -->
-  <div class="relative z-10 mx-auto w-full max-w-6xl px-5 pt-36 text-center sm:px-8 sm:pt-40">
-    <p class="eyebrow mb-6 text-(--hero-muted)! hero-in" style="--d:0ms">Portfolio · {new Date().getFullYear()}</p>
-    <h1
-      id="hero-title"
-      class="hero-in mx-auto text-[clamp(3.6rem,13vw,9.5rem)] leading-[0.9] font-semibold tracking-[-0.05em] text-(--hero-ink)"
-      style="--d:80ms"
-    >
-      Hugo Cruz<span class="text-accent">.</span>
-    </h1>
-    <p
-      class="hero-in mx-auto mt-6 max-w-xl text-lg leading-relaxed text-balance text-(--hero-muted) sm:mt-8 sm:text-2xl"
-      style="--d:160ms"
-    >
-      {site.role}. Escribo código, persigo paisajes y sueño con coches.
-    </p>
-    <div class="hero-in mt-9 flex flex-wrap items-center justify-center gap-3 sm:mt-10" style="--d:240ms">
-      <a
-        href="#proyectos"
-        class="rounded-full bg-(--hero-ink) px-6 py-3 text-sm font-medium text-(--sky-bottom) transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98]"
-      >
-        Ver proyectos
-      </a>
-      <a href="#contacto" class="group rounded-full px-5 py-3 text-sm font-medium text-(--hero-ink)">
-        Hablemos <span class="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-      </a>
+<!-- La sección es más alta que la pantalla: el contenido queda fijo (sticky) y la animación avanza con el scroll -->
+<section class="hero relative h-[185svh]" aria-labelledby="hero-title" style="--p:0">
+  <div class="sticky top-0 h-svh overflow-hidden">
+    <div class="frame absolute inset-0 overflow-hidden bg-[#0b1a2e]">
+      <div class="intro-zoom size-full">
+        <Picture
+          src={heroImage}
+          alt="Cordillera nevada bajo un cielo azul"
+          formats={['avif', 'webp']}
+          widths={[640, 1024, 1600, 2200]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="photo size-full object-cover"
+          pictureAttributes={{ class: "block size-full" }}
+        />
+      </div>
+      <div class="shade absolute inset-0" aria-hidden="true"></div>
     </div>
 
-    <button
-      id="sky-button"
-      type="button"
-      class="hero-in absolute top-[4.5rem] right-4 flex items-center gap-2 sm:right-8 sm:top-20 rounded-full border border-(--hero-ink)/10 bg-(--sky-bottom)/40 px-3.5 py-1.5 font-mono text-[11px] tracking-wide text-(--hero-muted) backdrop-blur-md transition-colors hover:border-(--hero-ink)/25"
-      style="--d:320ms"
-      aria-live="polite"
-      title="Cambiar el cielo"
+    <!-- Fase 1: nombre -->
+    <div class="title absolute inset-0 flex flex-col items-center justify-center px-5 text-center text-white">
+      <p class="hero-in font-mono text-xs tracking-[0.18em] text-white/75 uppercase" style="--d:150ms">Portfolio · {new Date().getFullYear()}</p>
+      <h1 id="hero-title" class="hero-in mt-5 text-[clamp(3.4rem,12.5vw,10rem)] leading-[0.9] font-semibold tracking-[-0.05em]" style="--d:250ms">
+        {site.name.split(' ').slice(0, 2).join(' ')}<span class="text-accent">.</span>
+      </h1>
+      <p class="hero-in mt-6 max-w-xl text-lg leading-relaxed text-balance text-white/85 sm:text-2xl" style="--d:350ms">
+        {site.role}. Construyo cosas desde cero, del motor de un juego a la web.
+      </p>
+      <div class="hero-in mt-9 flex flex-wrap items-center justify-center gap-3" style="--d:450ms">
+        <a
+          href="#proyectos"
+          class="rounded-full bg-white px-6 py-3 text-sm font-medium text-[#1d1d1f] transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98]"
+        >
+          Ver proyectos
+        </a>
+        <a href="#contacto" class="group rounded-full px-5 py-3 text-sm font-medium text-white">
+          Hablemos <span class="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Fase 2: frase que aparece al deslizar -->
+    <div class="statement pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center" aria-hidden="true">
+      <p class="max-w-4xl text-[clamp(2rem,6vw,4.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-balance text-white">
+        Código limpio, ideas grandes <span class="text-white/70">y siempre otra cima por subir.</span>
+      </p>
+    </div>
+
+    <div class="cue absolute inset-x-0 bottom-8 flex flex-col items-center gap-2 text-white/70" aria-hidden="true">
+      <span class="font-mono text-[10px] tracking-[0.2em] uppercase">Desliza</span>
+      <span class="cue-line block h-8 w-px bg-white/60"></span>
+    </div>
+
+    <a
+      href={photo.url}
+      target="_blank"
+      rel="noopener"
+      class="credit absolute right-4 bottom-4 font-mono text-[10px] text-white/50 transition-colors hover:text-white sm:right-6"
     >
-      <span class="relative flex size-1.5">
-        <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60"></span>
-        <span class="relative inline-flex size-1.5 rounded-full bg-accent"></span>
-      </span>
-      <span>Cielo en directo · <span id="sky-time">--:--</span> · <span id="sky-label">Día</span></span>
-    </button>
-  </div>
-
-  <!-- Paisaje: Alpes suizos en capas -->
-  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[58%] sm:h-[62%]" aria-hidden="true">
-    <svg class="size-full" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMax slice">
-      <defs>
-        <radialGradient id="sun-glow">
-          <stop offset="0" stop-color="var(--sun-glow)"></stop>
-          <stop offset="1" stop-color="var(--sun-glow)" stop-opacity="0"></stop>
-        </radialGradient>
-      </defs>
-
-      <g class="stars" style="opacity: var(--stars)">
-        {
-          stars.map((s) => (
-            <circle
-              cx={s.x}
-              cy={s.y}
-              r={s.r}
-              fill="#fff"
-              class={s.twinkle ? 'twinkle' : undefined}
-              style={s.twinkle ? `animation-delay:${s.delay}s` : undefined}
-            />
-          ))
-        }
-      </g>
-
-      <g data-depth="0.05">
-        <circle cx="1130" cy="215" r="140" fill="url(#sun-glow)"></circle>
-        <circle cx="1130" cy="215" r="34" style="fill: var(--sun)"></circle>
-      </g>
-
-      <!-- Cordillera lejana -->
-      <g data-depth="0.12"><path
-        transform="translate(0 60)"
-        style="fill: var(--m-far)"
-        d="M0 420 L80 382 L150 400 L240 302 L300 342 L360 284 L420 332 L520 252 L600 322 L660 296 L700 330 L760 300 L860 232 L940 302 L1010 270 L1100 340 L1180 262 L1260 312 L1340 282 L1440 332 L1440 600 L0 600Z"
-      ></path></g>
-
-      <!-- Cordillera media con un pico tipo Cervino -->
-      <g data-depth="0.22"><g transform="translate(0 80)">
-        <path
-          style="fill: var(--m-mid)"
-          d="M0 470 L110 430 L210 450 L320 385 L410 430 L500 405 L600 440 L680 360 L735 270 L760 200 L784 222 L810 285 L880 350 L960 330 L1050 390 L1150 360 L1250 410 L1350 380 L1440 405 L1440 600 L0 600Z"
-        ></path>
-        <path
-          style="fill: var(--snow)"
-          opacity="0.9"
-          d="M735 270 L760 200 L784 222 L810 285 L793 272 L779 292 L763 266 L749 286 Z"
-        ></path>
-        <path style="fill: var(--snow)" opacity="0.55" d="M305 394 L320 385 L340 397 L330 400 L322 393 L312 401 Z"></path>
-      </g></g>
-
-      <!-- Colinas cercanas + carretera -->
-      <g data-depth="0.34">
-        <path
-          style="fill: var(--m-near)"
-          d="M0 500 C 220 458, 380 480, 540 494 S 820 448, 980 468 S 1260 492, 1440 458 L1440 600 L0 600Z"
-        ></path>
-        <path id="road" d={road} fill="none" stroke-width="11" stroke-linecap="round" style="stroke: color-mix(in oklab, var(--m-near) 55%, #000)"></path>
-        <path d={road} fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="10 12" opacity="0.55"></path>
-
-        <!-- El coche -->
-        <g class="car">
-          <g>
-            <polygon points="14,-2 70,-14 70,12" fill="#fff6c8" style="opacity: calc(var(--headlights) * 0.35)"></polygon>
-            <rect x="-15" y="-6" width="30" height="9" rx="3.5" fill="#ff3b30"></rect>
-            <path d="M-8 -6 L-4 -12 L7 -12 L11 -6 Z" fill="#ff3b30"></path>
-            <path d="M-5.5 -6.5 L-3 -10.5 L6 -10.5 L8.5 -6.5 Z" fill="#cfe3ff" opacity="0.85"></path>
-            <circle cx="-8" cy="3.5" r="3" fill="#1d1d1f"></circle>
-            <circle cx="8" cy="3.5" r="3" fill="#1d1d1f"></circle>
-            <rect x="12.5" y="-4" width="2.5" height="2" rx="1" fill="#fff6c8"></rect>
-          </g>
-          <animateMotion dur="16s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
-            <mpath href="#road"></mpath>
-          </animateMotion>
-        </g>
-      </g>
-
-      <!-- Primer plano: se funde con el fondo de la página -->
-      <path
-        style="fill: var(--canvas)"
-        d="M0 566 C 300 540, 520 584, 760 562 S 1200 546, 1440 570 L1440 600 L0 600Z"
-      ></path>
-    </svg>
+      Foto: {photo.author} · Unsplash
+    </a>
   </div>
 </section>
 
 <style>
-  .sky {
+  /* --p va de 0 a 1 según el scroll dentro de la sección (lo calcula el script) */
+  .frame {
+    clip-path: inset(
+      calc(var(--p) * 3.5%) calc(var(--p) * 4%) calc(var(--p) * 3.5%) calc(var(--p) * 4%) round calc(var(--p) * 2.25rem)
+    );
+  }
+  .photo {
+    transform: scale(calc(1.16 - var(--p) * 0.16)) translateY(calc(var(--p) * 3%));
+    transform-origin: 50% 40%;
+  }
+  .shade {
     background:
-      radial-gradient(120% 70% at 50% 110%, var(--sky-bottom) 20%, transparent 70%),
-      linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
-    transition: background 1.2s ease;
+      radial-gradient(60% 45% at 50% 50%, rgb(0 0 0 / 0.38), transparent 75%),
+      linear-gradient(180deg, rgb(0 0 0 / 0.35) 0%, rgb(0 0 0 / 0.05) 35%, rgb(0 0 0 / 0.05) 60%, rgb(0 0 0 / 0.45) 100%),
+      rgb(0 0 0 / calc(var(--p) * 0.35));
   }
-  .hero :global(path),
-  .hero :global(circle) {
-    transition: fill 1.2s ease;
+  .title,
+  .statement {
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.35);
   }
-  .twinkle {
-    animation: twinkle 4s ease-in-out infinite;
+  .title {
+    opacity: clamp(0, 1 - var(--p) * 2.6, 1);
+    transform: translateY(calc(var(--p) * -14vh)) scale(calc(1 - var(--p) * 0.08));
   }
-  @keyframes twinkle {
+  .statement {
+    opacity: clamp(0, (var(--p) - 0.38) * 3.2, 1);
+    transform: translateY(calc((1 - var(--p)) * 6vh));
+  }
+  .cue,
+  .credit {
+    opacity: clamp(0, 1 - var(--p) * 5, 1);
+  }
+  .cue-line {
+    transform-origin: top;
+    animation: cue 2.2s var(--ease-apple) infinite;
+  }
+  @keyframes cue {
+    0% {
+      transform: scaleY(0);
+    }
     50% {
-      opacity: 0.2;
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    51% {
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+  .intro-zoom {
+    animation: intro-zoom 2.4s var(--ease-apple) both;
+  }
+  @keyframes intro-zoom {
+    from {
+      transform: scale(1.12);
+      filter: blur(8px) brightness(0.7);
     }
   }
   .hero-in {
-    animation: hero-in 1.1s var(--ease-apple) both;
+    animation: hero-in 1.2s var(--ease-apple) both;
     animation-delay: var(--d);
   }
   @keyframes hero-in {
@@ -179,54 +145,35 @@ const road = 'M-40 590 C 180 562, 330 548, 540 548 S 860 528, 1010 524 S 1300 51
       filter: blur(6px);
     }
   }
-  [data-depth] {
-    will-change: transform;
+  @media (prefers-reduced-motion: reduce) {
+    .hero {
+      height: 100svh;
+    }
+    .statement {
+      display: none;
+    }
   }
 </style>
 
 <script>
-  const root = document.documentElement;
-  const skies = ['dawn', 'day', 'sunset', 'night'] as const;
-  const labels: Record<string, string> = { dawn: 'Amanecer', day: 'Día', sunset: 'Atardecer', night: 'Noche' };
-  const timeEl = document.getElementById('sky-time')!;
-  const labelEl = document.getElementById('sky-label')!;
+  const hero = document.querySelector<HTMLElement>('.hero')!;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
-  const render = () => {
-    timeEl.textContent = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    labelEl.textContent = labels[root.dataset.sky ?? 'day'];
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    if (reduced.matches) return hero.style.setProperty('--p', '0');
+    const range = hero.offsetHeight - innerHeight;
+    const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / range));
+    hero.style.setProperty('--p', p.toFixed(4));
   };
-  render();
-  setInterval(render, 30_000);
-
-  // Easter egg: pulsa para recorrer los cielos
-  document.getElementById('sky-button')!.addEventListener('click', () => {
-    const i = skies.indexOf((root.dataset.sky ?? 'day') as (typeof skies)[number]);
-    root.dataset.sky = skies[(i + 1) % skies.length];
-    render();
-  });
-
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const svg = document.querySelector<SVGSVGElement>('.hero svg');
-  if (reduced) {
-    svg?.pauseAnimations();
-  } else {
-    // Parallax suave de las montañas
-    const layers = [...document.querySelectorAll<SVGElement>('[data-depth]')];
-    let ticking = false;
-    const update = () => {
-      const y = Math.min(window.scrollY, window.innerHeight);
-      for (const l of layers) l.style.transform = `translateY(${y * Number(l.dataset.depth)}px)`;
-      ticking = false;
-    };
-    addEventListener(
-      'scroll',
-      () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-      },
-      { passive: true },
-    );
-  }
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
 </script>

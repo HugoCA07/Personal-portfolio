@@ -12,20 +12,23 @@ export interface SkillGroup {
 export const skillGroups: SkillGroup[] = [
   {
     title: 'Lenguajes',
-    caption: 'El motor',
+    caption: 'Lo que escribo',
     items: ['C++', 'Java', 'JavaScript', 'PHP', 'Python', 'C', 'SQL'],
   },
   {
     title: 'Web',
-    caption: 'La carrocería',
+    caption: 'Lo que construyo',
     items: ['HTML', 'CSS', 'Astro', 'Tailwind CSS', 'XML · XSLT · XQuery'],
   },
   {
     title: 'Herramientas',
-    caption: 'El taller',
+    caption: 'Con lo que trabajo',
     items: ['Git', 'GitHub', 'MySQL', 'JDBC', 'CMake', 'SFML', 'Java Swing'],
   },
 ];
 
 /** Lo que estoy aprendiendo ahora mismo. */
 export const learning = ['C++ moderno', 'Desarrollo web de servidor', 'Inglés'];
+
+/** Aficiones fuera de la programación. */
+export const interests = ['Informática', 'Paisajes', 'Coches', 'Videojuegos'];

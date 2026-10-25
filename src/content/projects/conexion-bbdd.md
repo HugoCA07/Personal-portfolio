@@ -7,7 +7,7 @@ status: Completado
 order: 30
 stack: [Java, JDBC, MySQL]
 specs:
-  - { label: Motor, value: Java }
+  - { label: Lenguaje, value: Java }
   - { label: Datos, value: MySQL }
 repo: https://github.com/HugoCA07/1DAW-Conexion_a_BBDD
 accent: "#ff9f0a"

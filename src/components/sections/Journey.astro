@@ -3,8 +3,8 @@ import Section from '@/components/ui/Section.astro';
 import { timeline } from '@/data/timeline';
 ---
 
-<Section id="ruta" eyebrow="La ruta" title="Kilómetro a kilómetro.">
-  <ol class="road relative ml-3 sm:mx-auto sm:max-w-3xl">
+<Section id="trayectoria" eyebrow="Trayectoria" title="Paso a paso.">
+  <ol class="timeline relative ml-3 sm:mx-auto sm:max-w-3xl">
     {
       timeline.map((m, i) => (
         <li
@@ -25,7 +25,7 @@ import { timeline } from '@/data/timeline';
             {m.current && <span class="size-2 animate-pulse rounded-full bg-accent" />}
           </span>
           <p class:list={['font-mono text-xs tracking-[0.14em] uppercase', m.current ? 'text-accent' : 'text-muted']}>
-            KM {m.year}
+            {m.year}
           </p>
           <h3 class:list={['mt-2 text-2xl font-semibold tracking-tight', m.future && 'text-muted']}>{m.title}</h3>
           <p class="mt-2 leading-relaxed text-muted">{m.text}</p>
@@ -36,33 +36,19 @@ import { timeline } from '@/data/timeline';
 </Section>
 
 <style>
-  /* La línea central es una carretera con su marca discontinua */
-  .road::before {
-    content: '';
-    position: absolute;
-    top: 0.5rem;
-    bottom: 0;
-    left: -3px;
-    width: 6px;
-    border-radius: 99px;
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-  }
-  .road::after {
+  /* Línea vertical de la trayectoria */
+  .timeline::before {
     content: '';
     position: absolute;
     top: 0.5rem;
     bottom: 0;
     left: -0.5px;
     width: 1px;
-    background: repeating-linear-gradient(to bottom, var(--muted) 0 8px, transparent 8px 18px);
-    opacity: 0.6;
+    background: linear-gradient(to bottom, var(--line), var(--muted) 15%, var(--muted) 85%, transparent);
+    opacity: 0.5;
   }
   @media (min-width: 640px) {
-    .road::before {
-      left: calc(50% - 3px);
-    }
-    .road::after {
+    .timeline::before {
       left: calc(50% - 0.5px);
     }
   }

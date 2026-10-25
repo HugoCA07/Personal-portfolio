@@ -7,7 +7,7 @@ status: Completado
 order: 33
 stack: [Java]
 specs:
-  - { label: Motor, value: Java }
+  - { label: Lenguaje, value: Java }
   - { label: Curso, value: 1º DAW }
 repo: https://github.com/HugoCA07/1DAW-Programacion
 accent: "#ff9500"

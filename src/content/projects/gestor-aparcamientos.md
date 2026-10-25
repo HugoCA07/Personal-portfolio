@@ -8,7 +8,7 @@ featured: true
 order: 2
 stack: [Java, Swing, MySQL, JDBC, MVC]
 specs:
-  - { label: Motor, value: Java }
+  - { label: Lenguaje, value: Java }
   - { label: Interfaz, value: Swing (JFrame) }
   - { label: Datos, value: MySQL + JDBC }
   - { label: Arquitectura, value: MVC }

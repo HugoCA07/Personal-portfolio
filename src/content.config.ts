@@ -19,7 +19,7 @@ const projects = defineCollection({
     /** Orden de aparición (menor primero). */
     order: z.number().default(100),
     stack: z.array(z.string()),
-    /** Ficha técnica estilo "especificaciones de coche". */
+    /** Ficha técnica: pares etiqueta/valor. */
     specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
     repo: z.url().optional(),
     demo: z.url().optional(),

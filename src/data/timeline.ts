@@ -1,5 +1,5 @@
 /**
- * La "ruta": hitos ordenados cronológicamente.
+ * Trayectoria: hitos ordenados cronológicamente.
  * `current: true` marca el punto en el que estás ahora.
  */
 
@@ -14,8 +14,8 @@ export interface Milestone {
 export const timeline: Milestone[] = [
   {
     year: '2007',
-    title: 'Salida',
-    text: 'Arranca el motor. Nazco con la curiosidad de saber cómo funciona todo por dentro.',
+    title: 'El comienzo',
+    text: 'Nazco con la curiosidad de saber cómo funciona todo por dentro.',
   },
   {
     year: '2024',
@@ -45,8 +45,8 @@ export const timeline: Milestone[] = [
   },
   {
     year: 'Próximo',
-    title: 'Siguiente parada',
-    text: 'Proyectos más grandes, colaborar con otros desarrolladores… y quizá, algún día, Suiza.',
+    title: 'Lo que viene',
+    text: 'Proyectos más grandes y colaborar con otros desarrolladores.',
     future: true,
   },
 ];

@@ -9,7 +9,7 @@ export const site = {
   monogram: 'HC',
   role: 'Desarrollador web en formación',
   description:
-    'Portfolio de Hugo Cruz Aranda: desarrollador web en formación (DAW). C++, Java, JavaScript, PHP y Python. Código, paisajes y coches.',
+    'Portfolio de Hugo Cruz Aranda: desarrollador web en formación (DAW). C++, Java, JavaScript, PHP y Python.',
   bornYear: 2007,
   location: 'España',
   email: '2007huugoo@gmail.com',
@@ -26,7 +26,7 @@ export const nav = [
   { label: 'Sobre mí', href: '/#sobre-mi' },
   { label: 'Proyectos', href: '/#proyectos' },
   { label: 'Stack', href: '/#stack' },
-  { label: 'Ruta', href: '/#ruta' },
+  { label: 'Trayectoria', href: '/#trayectoria' },
   { label: 'Contacto', href: '/#contacto' },
 ] as const;
 

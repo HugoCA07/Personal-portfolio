@@ -7,7 +7,7 @@ status: En curso
 order: 21
 stack: [PHP, CSS]
 specs:
-  - { label: Motor, value: PHP }
+  - { label: Lenguaje, value: PHP }
   - { label: Curso, value: 2º DAW }
 repo: https://github.com/HugoCA07/2DAW-Desarrollo_web_servidor
 accent: "#5e5ce6"

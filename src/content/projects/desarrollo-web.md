@@ -7,7 +7,7 @@ status: Completado
 order: 32
 stack: [JavaScript, HTML, CSS, XML, XSLT, XQuery]
 specs:
-  - { label: Motor, value: JavaScript }
+  - { label: Lenguaje, value: JavaScript }
   - { label: Curso, value: 1º DAW }
 repo: https://github.com/HugoCA07/1DAW-Desarrollo_Web
 accent: "#64d2ff"

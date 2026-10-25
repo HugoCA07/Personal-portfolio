@@ -1,11 +1,10 @@
 ---
 import Section from '@/components/ui/Section.astro';
-import Tachometer from '@/components/ui/Tachometer.astro';
 import { site } from '@/config/site';
-import { learning } from '@/data/skills';
+import { interests, learning } from '@/data/skills';
 
 const stats = [
-  { value: String(site.bornYear), label: 'Año de fabricación' },
+  { value: String(site.bornYear), label: 'Año de nacimiento' },
   { value: String(site.github.publicRepos), label: 'Repos públicos' },
   { value: '2º', label: 'Desarrollo de Aplicaciones Web' },
 ];
@@ -15,8 +14,6 @@ const terminal = [
   { cmd: 'cat stack.txt', out: 'C++  Java  JS  PHP  Python  SQL' },
   { cmd: './terraforge --seed 2007', out: 'generando mundo… ✓ listo' },
 ];
-
-const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80 L370 130 L430 105 L500 160 L560 130 L640 175 L720 140 L800 185 L800 220 L0 220Z';
 ---
 
 <Section
@@ -28,7 +25,7 @@ const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80
     <!-- Presentación -->
     <article class="card flex flex-col justify-between gap-10 p-8 sm:p-10 md:col-span-2 lg:col-span-4" data-reveal>
       <p class="text-2xl leading-snug font-medium tracking-tight text-balance sm:text-[1.9rem]">
-        Hola, soy Hugo. Un programador joven y ambicioso que estudia <span class="text-accent">Desarrollo de Aplicaciones Web</span>{" "}
+        Hola, soy Hugo. Un programador joven y ambicioso que estudia <span class="text-accent">Desarrollo de Aplicaciones Web</span>{' '}
         y que disfruta construyendo cosas grandes desde cero: de un motor de videojuegos en C++ a aplicaciones con Java y MySQL.
       </p>
       <div>
@@ -52,7 +49,7 @@ const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80
     </article>
 
     <!-- Código -->
-    <article class="terminal overflow-hidden rounded-[1.75rem] bg-[#0b0b0f] text-[#e5e5ea] shadow-soft lg:col-span-3" data-reveal>
+    <article class="terminal overflow-hidden rounded-[1.75rem] bg-[#0b0b0f] text-[#e5e5ea] shadow-soft md:col-span-2 lg:col-span-4" data-reveal>
       <div class="flex items-center gap-2 border-b border-white/10 px-5 py-3.5">
         <span class="size-3 rounded-full bg-[#ff5f57]"></span>
         <span class="size-3 rounded-full bg-[#febc2e]"></span>
@@ -74,65 +71,19 @@ const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80
           <span class="text-[#30d158]">~</span> <span class="text-white/40">$</span> <span class="caret"></span>
         </p>
       </div>
-      <div class="px-6 pb-7 sm:px-8">
-        <h3 class="text-xl font-semibold tracking-tight text-white">Informática</h3>
-        <p class="mt-1 text-sm text-white/55">Me gusta entender cómo funcionan las cosas por dentro, desde la memoria hasta el navegador.</p>
-      </div>
     </article>
 
-    <!-- Coches -->
-    <article class="card flex flex-col items-center gap-6 p-8 text-center sm:flex-row sm:text-left lg:col-span-3" data-reveal style="--delay:80ms">
-      <div class="w-44 shrink-0 text-ink sm:w-52">
-        <Tachometer rpm={7.4} label="Pasión" />
-      </div>
+    <!-- Fuera del código -->
+    <article class="card flex flex-col justify-between gap-8 p-8 sm:p-10 md:col-span-2 lg:col-span-2" data-reveal style="--delay:80ms">
       <div>
-        <h3 class="text-2xl font-semibold tracking-tight">Coches</h3>
-        <p class="mt-2 leading-relaxed text-muted">
-          Diseño, ingeniería y precisión: un buen coche y un buen software tienen mucho en común. Cada pieza en su sitio y todo afinado para rendir.
+        <p class="eyebrow">Fuera del código</p>
+        <p class="mt-4 text-lg leading-relaxed text-muted">
+          Me gusta entender cómo funcionan las cosas por dentro. Cuando no estoy programando, disfruto de la naturaleza y de los buenos diseños.
         </p>
       </div>
-    </article>
-
-    <!-- Paisajes -->
-    <article class="landscape relative overflow-hidden rounded-[1.75rem] shadow-soft md:col-span-2 lg:col-span-6" data-reveal>
-      <svg class="absolute inset-0 size-full" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="lake-sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="var(--sky-top)"></stop>
-            <stop offset="1" stop-color="var(--sky-bottom)"></stop>
-          </linearGradient>
-          <linearGradient id="lake-water" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="var(--m-near)" stop-opacity="0.55"></stop>
-            <stop offset="1" stop-color="var(--m-near)"></stop>
-          </linearGradient>
-        </defs>
-        <rect width="1200" height="520" fill="url(#lake-sky)"></rect>
-        <circle cx="930" cy="120" r="26" style="fill: var(--sun)"></circle>
-        <g transform="translate(0 80) scale(1.5 1)">
-        <path d={ridge} style="fill: var(--m-far)" opacity="0.8"></path>
-        <path d="M0 220 L90 150 L150 175 L240 110 L280 135 L340 90 L420 160 L520 120 L610 170 L700 125 L800 165 L800 220Z" style="fill: var(--m-mid)"></path>
-        <path d="M325 102 L340 90 L356 108 L346 104 L340 112 L333 104Z M228 120 L240 110 L252 124 L244 121 L238 127Z" style="fill: var(--snow)" opacity="0.9"></path>
-        <!-- Lago con reflejo -->
-        <rect y="220" width="800" height="220" fill="url(#lake-water)"></rect>
-        <g transform="translate(0 440) scale(1 -1)" opacity="0.28">
-          <path d="M0 220 L90 150 L150 175 L240 110 L280 135 L340 90 L420 160 L520 120 L610 170 L700 125 L800 165 L800 220Z" style="fill: var(--m-mid)"></path>
-        </g>
-        <g stroke="#fff" stroke-linecap="round" opacity="0.35">
-          <line class="ripple" x1="120" y1="262" x2="190" y2="262" stroke-width="1.5"></line>
-          <line class="ripple" x1="460" y1="300" x2="560" y2="300" stroke-width="1.5" style="animation-delay:1.2s"></line>
-          <line class="ripple" x1="260" y1="350" x2="320" y2="350" stroke-width="1.2" style="animation-delay:2.4s"></line>
-        </g>
-        </g>
-      </svg>
-      <div class="relative flex min-h-80 flex-col justify-between gap-16 p-8 sm:min-h-[26rem] sm:p-12">
-        <div class="max-w-md">
-          <p class="eyebrow text-(--hero-muted)!">Paisajes</p>
-          <h3 class="mt-3 text-3xl font-semibold tracking-tight text-(--hero-ink) sm:text-5xl">Suiza, siempre.</h3>
-        </div>
-        <p class="max-w-md text-sm leading-relaxed text-white/90 sm:text-base">
-          Lagos en calma, picos nevados y carreteras de montaña. Los paisajes me recuerdan que lo bien hecho es sencillo — y que siempre hay otra cima.
-        </p>
-      </div>
+      <ul class="flex flex-wrap gap-2">
+        {interests.map((i) => <li class="rounded-full border border-line px-3.5 py-1.5 text-sm">{i}</li>)}
+      </ul>
     </article>
   </div>
 </Section>
@@ -146,7 +97,7 @@ const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80
       transform 0.5s ease;
     transition-delay: calc(var(--i) * 450ms + 200ms);
   }
-   .terminal:global(.is-visible) .line,
+  .terminal:global(.is-visible) .line,
   :global(html:not(.js)) .terminal .line {
     opacity: 1;
     transform: none;
@@ -162,15 +113,6 @@ const ridge = 'M0 210 L60 170 L110 190 L170 120 L215 150 L260 95 L300 60 L330 80
   @keyframes blink {
     50% {
       opacity: 0;
-    }
-  }
-  .ripple {
-    animation: ripple 4.5s ease-in-out infinite;
-  }
-  @keyframes ripple {
-    50% {
-      transform: translateX(14px);
-      opacity: 0.2;
     }
   }
 </style>

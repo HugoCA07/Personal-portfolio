@@ -7,7 +7,7 @@ status: Completado
 order: 31
 stack: [Java, POO]
 specs:
-  - { label: Motor, value: Java }
+  - { label: Lenguaje, value: Java }
   - { label: Paradigma, value: Orientado a objetos }
 repo: https://github.com/HugoCA07/1DAW-Gestor_de_bibliotecas
 accent: "#af52de"

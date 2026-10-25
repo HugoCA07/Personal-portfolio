@@ -8,7 +8,7 @@ featured: true
 order: 1
 stack: [C++17, SFML 2.6, CMake]
 specs:
-  - { label: Motor, value: C++17 + SFML }
+  - { label: Lenguaje, value: C++17 + SFML }
   - { label: Mundo, value: Procedural e infinito }
   - { label: Física, value: AABB propia }
   - { label: Build, value: CMake }
@@ -20,7 +20,7 @@ accent: "#34c759"
 
 TerraForge nace de una pregunta sencilla: *¿cómo funciona por dentro un juego como Terraria?* En lugar de usar un motor existente, decidí construir el mío propio en C++ para entender cada pieza: el bucle de juego, el renderizado, la física y la generación de mundos.
 
-## Lo que hay bajo el capó
+## Características
 
 - **Generación procedural del mundo:** terreno infinito con autómatas celulares para las cuevas y algoritmos de ruido para los biomas (bosque, desierto y nieve).
 - **Autotiling inteligente:** un sistema de *bitmasking* propio que crea transiciones orgánicas entre bloques (tierra, piedra) y paredes de fondo.

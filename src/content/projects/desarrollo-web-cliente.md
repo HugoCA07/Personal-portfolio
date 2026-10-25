@@ -7,7 +7,7 @@ status: En curso
 order: 20
 stack: [JavaScript, HTML]
 specs:
-  - { label: Motor, value: JavaScript }
+  - { label: Lenguaje, value: JavaScript }
   - { label: Curso, value: 2º DAW }
 repo: https://github.com/HugoCA07/2DAW-Desarrollo_web_cliente
 accent: "#ffcc00"

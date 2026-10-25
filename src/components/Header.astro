@@ -3,21 +3,19 @@ import { nav, site } from '@/config/site';
 import ThemeToggle from '@/components/ui/ThemeToggle.astro';
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
-  <div class="border-b border-line bg-glass backdrop-blur-xl backdrop-saturate-150">
-    <nav class="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8" aria-label="Principal">
-      <a href="/" class="flex items-center gap-2.5 text-sm font-semibold tracking-tight" aria-label="Inicio">
-        <span class="grid size-8 place-items-center rounded-[10px] bg-ink font-mono text-[11px] text-canvas">
-          {site.monogram}
-        </span>
-        <span class="hidden sm:inline">{site.shortName}</span>
-      </a>
+<header class="pointer-events-none fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-6">
+  <div class="relative mx-auto max-w-4xl">
+    <nav
+      class="glass pointer-events-auto flex h-13 items-center justify-between rounded-full pr-1.5 pl-5 sm:pl-6"
+      aria-label="Principal"
+    >
+      <a href="/" class="text-[15px] font-semibold tracking-tight whitespace-nowrap">{site.name}</a>
 
-      <ul class="hidden items-center gap-8 text-[13px] text-muted md:flex">
+      <ul class="hidden items-center gap-1 text-[13px] md:flex">
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="transition-colors duration-300 hover:text-ink">
+              <a href={item.href} class="rounded-full px-3.5 py-2 text-ink/70 transition-colors duration-300 hover:bg-ink/5 hover:text-ink">
                 {item.label}
               </a>
             </li>
@@ -25,59 +23,94 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
         }
       </ul>
 
-      <div class="flex items-center gap-1">
+      <div class="flex items-center">
         <ThemeToggle />
         <button
           id="menu-button"
           type="button"
-          class="grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-surface-2 md:hidden"
+          class="grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5 md:hidden"
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Abrir menú"
         >
-          <span class="relative block h-3 w-4.5">
-            <span class="menu-line absolute left-0 top-0 h-[1.5px] w-full rounded bg-current transition-transform duration-300"></span>
+          <span class="relative block h-2.5 w-4">
+            <span class="menu-line absolute top-0 left-0 h-[1.5px] w-full rounded bg-current transition-transform duration-300"></span>
             <span class="menu-line absolute bottom-0 left-0 h-[1.5px] w-full rounded bg-current transition-transform duration-300"></span>
           </span>
         </button>
       </div>
     </nav>
-  </div>
 
-  <!-- Menú móvil a pantalla completa -->
-  <div
-    id="mobile-menu"
-    class="pointer-events-none fixed inset-x-0 top-14 bottom-0 bg-canvas/95 opacity-0 backdrop-blur-xl transition-opacity duration-500 md:hidden"
-    inert
-  >
-    <ul class="flex flex-col gap-1 px-8 pt-8">
-      {
-        nav.map((item, i) => (
-          <li class="menu-item translate-y-2 opacity-0 transition-all duration-500" style={`transition-delay:${80 + i * 40}ms`}>
-            <a href={item.href} class="block py-3 text-3xl font-semibold tracking-tight">
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <!-- Menú móvil: panel de cristal flotante -->
+    <div
+      id="mobile-menu"
+      class="glass pointer-events-none absolute inset-x-0 top-full mt-2 origin-top scale-95 rounded-[1.75rem] p-3 opacity-0 transition-all duration-300 ease-(--ease-apple) md:hidden"
+      inert
+    >
+      <ul class="flex flex-col">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="block rounded-2xl px-4 py-3 text-lg font-medium tracking-tight transition-colors hover:bg-ink/5">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </header>
 
 <style>
+  /* Liquid glass: desenfoque + saturación, borde especular y brillo interior */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.22));
+    backdrop-filter: blur(22px) saturate(185%) contrast(1.05);
+    -webkit-backdrop-filter: blur(22px) saturate(185%) contrast(1.05);
+    border: 1px solid rgb(255 255 255 / 0.55);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.85),
+      inset 0 -1px 0 rgb(255 255 255 / 0.25),
+      inset 0 0 24px rgb(255 255 255 / 0.18),
+      0 10px 34px -10px rgb(0 0 0 / 0.22),
+      0 2px 6px rgb(0 0 0 / 0.06);
+  }
+  .glass::before {
+    /* reflejo de luz en la parte superior */
+    content: '';
+    position: absolute;
+    inset: 1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.45) 0%, rgb(255 255 255 / 0) 45%);
+    pointer-events: none;
+  }
+  :global([data-theme='dark']) .glass {
+    background: linear-gradient(135deg, rgb(40 40 46 / 0.55), rgb(20 20 24 / 0.35));
+    border-color: rgb(255 255 255 / 0.14);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.18),
+      inset 0 -1px 0 rgb(255 255 255 / 0.05),
+      inset 0 0 24px rgb(255 255 255 / 0.04),
+      0 10px 34px -10px rgb(0 0 0 / 0.7);
+  }
+  :global([data-theme='dark']) .glass::before {
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0) 45%);
+  }
+
   header[data-open] #mobile-menu {
     opacity: 1;
+    transform: none;
     pointer-events: auto;
   }
-  header[data-open] .menu-item {
-    opacity: 1;
-    transform: none;
-  }
   header[data-open] .menu-line:first-child {
-    transform: translateY(5.25px) rotate(45deg);
+    transform: translateY(4.25px) rotate(45deg);
   }
   header[data-open] .menu-line:last-child {
-    transform: translateY(-5.25px) rotate(-45deg);
+    transform: translateY(-4.25px) rotate(-45deg);
   }
 </style>
 
@@ -91,11 +124,11 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
     button.setAttribute('aria-expanded', String(open));
     button.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
     menu.inert = !open;
-    document.body.style.overflow = open ? 'hidden' : '';
   };
 
   button.addEventListener('click', () => setOpen(!header.hasAttribute('data-open')));
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+  document.addEventListener('click', (e) => !header.contains(e.target as Node) && setOpen(false));
   matchMedia('(min-width: 768px)').addEventListener('change', () => setOpen(false));
 </script>

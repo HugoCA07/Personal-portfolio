@@ -12,7 +12,7 @@ const { courses } = Astro.props;
 <ul class="divide-y divide-line border-y border-line">
   {
     courses.map((c, i) => (
-      <li class="group relative grid gap-x-8 gap-y-1.5 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline" data-reveal style={`--delay:${(i % 4) * 50}ms`}>
+      <li class="group relative grid grid-cols-[minmax(0,1fr)] gap-x-8 gap-y-1.5 py-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline" data-reveal style={`--delay:${(i % 4) * 50}ms`}>
         <div class="min-w-0">
           <h3 class="text-lg font-semibold tracking-tight sm:text-xl">
             {/* El enlace cubre toda la fila */}
@@ -22,8 +22,8 @@ const { courses } = Astro.props;
           </h3>
           <p class="mt-1 text-[15px] leading-relaxed text-muted">{c.data.summary}</p>
         </div>
-        <div class="flex items-center gap-4 font-mono text-xs text-muted sm:justify-end">
-          <span class="truncate">{c.data.stack.join(' · ')}</span>
+        <div class="flex min-w-0 items-center gap-4 font-mono text-xs text-muted sm:justify-end">
+          <span class="min-w-0 truncate">{c.data.stack.join(' · ')}</span>
           {c.data.status && <span class="shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-[11px]">{c.data.status}</span>}
           {c.data.repo && (
             <a

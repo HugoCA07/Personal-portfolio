@@ -13,12 +13,15 @@ const courses = await getProjects((p) => p.data.category === 'course');
 const total = (await getProjects()).length;
 ---
 
-<Section
-  id="proyectos"
-  eyebrow="Proyectos"
-  title="Construido desde cero. <span class='text-muted'>Pieza a pieza.</span>"
-  intro="Una selección de lo que he hecho: motores de juego, aplicaciones de escritorio, la web y diseño de interfaces."
->
+<Section id="proyectos">
+  <header class="mb-14 flex flex-col gap-6 border-b border-line pb-10 sm:mb-20 md:flex-row md:items-end md:justify-between" data-reveal>
+    <h2 class="text-[clamp(3.75rem,13vw,10rem)] leading-[0.82] font-semibold tracking-[-0.06em]">
+      Proyectos<sup class="ml-2 align-top font-mono text-[0.18em] font-medium tracking-normal text-accent">{String(total).padStart(2, '0')}</sup>
+    </h2>
+    <p class="max-w-sm text-lg leading-relaxed text-muted md:pb-3 md:text-right">
+      Del motor de un videojuego en C++ a una guía de estilo en Figma. Los proyectos con historia, en grande; los de clase, en lista.
+    </p>
+  </header>
   <div class="space-y-5">
     {hero && <FeaturedProject project={hero} />}
     <div class="grid gap-5 md:grid-cols-2">

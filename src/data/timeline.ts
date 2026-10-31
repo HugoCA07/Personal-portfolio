@@ -49,9 +49,9 @@ export const timeline: Milestone[] = [
     current: true,
   },
   {
-    year: 'Próximo',
-    title: 'Lo que viene',
-    text: 'Proyectos más grandes y colaborar con otros desarrolladores.',
+    year: 'Jun 2027',
+    title: 'Fin de DAW',
+    text: 'Termino el ciclo de Desarrollo de Aplicaciones Web.',
     future: true,
   },
 ];

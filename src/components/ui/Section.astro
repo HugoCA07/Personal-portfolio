@@ -1,6 +1,8 @@
 ---
 /**
- * Contenedor estándar de sección: mismo espaciado y cabecera en toda la web.
+ * Contenedor de sección: espaciado común y cabecera opcional.
+ * - `layout="stack"` (por defecto): eyebrow, titular e intro uno debajo de otro.
+ * - `layout="split"`: titular a la izquierda e intro a la derecha (en escritorio).
  * Uso: <Section id="x" eyebrow="..." title="..." intro="...">...</Section>
  */
 interface Props {
@@ -8,24 +10,31 @@ interface Props {
   eyebrow?: string;
   title?: string;
   intro?: string;
+  layout?: 'stack' | 'split';
   class?: string;
 }
 
-const { id, eyebrow, title, intro, class: className } = Astro.props;
+const { id, eyebrow, title, intro, layout = 'stack', class: className } = Astro.props;
+const split = layout === 'split';
 ---
 
 <section id={id} class:list={['px-5 py-24 sm:px-8 sm:py-32 lg:py-40', className]}>
   <div class="mx-auto max-w-6xl">
     {
       (eyebrow || title) && (
-        <header class="mb-14 max-w-3xl sm:mb-20" data-reveal>
-          {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
-          {title && (
-            <h2 class="text-4xl leading-[1.05] font-semibold tracking-[-0.035em] text-balance sm:text-6xl">
-              <Fragment set:html={title} />
-            </h2>
-          )}
-          {intro && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{intro}</p>}
+        <header
+          class:list={['mb-14 sm:mb-20', split ? 'grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16' : 'max-w-3xl']}
+          data-reveal
+        >
+          <div>
+            {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+            {title && (
+              <h2 class="text-4xl leading-[1.05] font-semibold tracking-[-0.035em] text-balance sm:text-6xl">
+                <Fragment set:html={title} />
+              </h2>
+            )}
+          </div>
+          {intro && <p class:list={['text-lg leading-relaxed text-muted sm:text-xl', split ? 'lg:pb-2' : 'mt-6 max-w-2xl']}>{intro}</p>}
         </header>
       )
     }

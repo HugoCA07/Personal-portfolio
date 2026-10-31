@@ -34,3 +34,6 @@ desktop.ini
 *.local
 .cache/
 coverage/
+
+# claude
+PROMPT.md

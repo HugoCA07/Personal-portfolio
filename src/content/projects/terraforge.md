@@ -14,6 +14,13 @@ specs:
   - { label: Build, value: CMake }
 repo: https://github.com/HugoCA07/TerraForge
 accent: "#34c759"
+# Huecos preparados (descomenta cuando tengas los archivos, ver src/assets/projects/terraforge/README.md):
+# cover: ../../assets/projects/terraforge/cover.jpg
+# coverAlt: Un mundo generado en TerraForge
+# video: /videos/terraforge.mp4
+# videoPoster: ../../assets/projects/terraforge/poster.jpg
+# gallery:
+#   - { src: ../../assets/projects/terraforge/01.jpg, alt: Cuevas generadas proceduralmente, caption: Cuevas con autómatas celulares }
 ---
 
 ## La idea

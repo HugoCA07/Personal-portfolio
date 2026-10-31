@@ -15,6 +15,10 @@ specs:
 repo: https://github.com/HugoCA07/1DAW-Proyecto_Gestor_Aparcamientos
 team: [Jorge Fuentes Serrano, Hugo Cruz Aranda]
 accent: "#0071e3"
+# cover: ../../assets/projects/gestor-aparcamientos/cover.jpg
+# coverAlt: Ventana principal del gestor de aparcamientos
+# gallery:
+#   - { src: ../../assets/projects/gestor-aparcamientos/01.jpg, alt: Listado de plazas }
 ---
 
 ## El reto

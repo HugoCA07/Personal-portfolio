@@ -1,0 +1,86 @@
+---
+/**
+ * Foto personal con marco tipo visor de cámara.
+ * La imagen se detecta en `src/lib/portrait.ts` (coloca `src/assets/hugo.jpg`).
+ */
+import { Picture } from 'astro:assets';
+import { site } from '@/config/site';
+import { portrait, showPortrait } from '@/lib/portrait';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const found = portrait;
+const show = showPortrait;
+---
+
+{
+  show && (
+    <figure class:list={['portrait group relative overflow-hidden rounded-[1.75rem] bg-[#0b1a2e]', className]}>
+      {found ? (
+        <Picture
+          src={found}
+          alt={`Foto de ${site.name}`}
+          formats={['avif', 'webp']}
+          widths={[400, 640, 900]}
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          loading="lazy"
+          class="photo size-full object-cover"
+          pictureAttributes={{ class: 'contents' }}
+        />
+      ) : (
+        <div class="grid size-full place-items-center bg-linear-to-b from-[#28466b] to-[#0b1a2e] p-6 text-center font-mono text-xs leading-relaxed text-white/60">
+          TODO(Hugo): añade tu foto en src/assets/hugo.jpg
+          <br />
+          (solo visible en desarrollo)
+        </div>
+      )}
+
+      {/* Esquinas del visor */}
+      <span class="corner top-4 left-4 border-t border-l" aria-hidden="true" />
+      <span class="corner top-4 right-4 border-t border-r" aria-hidden="true" />
+      <span class="corner bottom-4 left-4 border-b border-l" aria-hidden="true" />
+      <span class="corner right-4 bottom-4 border-r border-b" aria-hidden="true" />
+
+      <figcaption class="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-linear-to-t from-black/60 to-transparent px-7 pt-16 pb-7 font-mono text-[11px] tracking-[0.14em] text-white/85 uppercase">
+        <span class="size-1.5 rounded-full bg-[#ff453a]" aria-hidden="true" />
+        {site.shortName} · {site.location}
+      </figcaption>
+    </figure>
+  )
+}
+
+<style>
+  .corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-color: rgb(255 255 255 / 0.7);
+    transition: transform 0.6s var(--ease-apple);
+  }
+  .photo {
+    filter: saturate(0.85) contrast(1.05);
+    transition:
+      transform 1.2s var(--ease-apple),
+      filter 1.2s var(--ease-apple);
+  }
+  .portrait:hover .photo {
+    transform: scale(1.03);
+    filter: none;
+  }
+  /* Al pasar el ratón, el visor "enfoca" */
+  .portrait:hover .corner.top-4.left-4 {
+    transform: translate(6px, 6px);
+  }
+  .portrait:hover .corner.top-4.right-4 {
+    transform: translate(-6px, 6px);
+  }
+  .portrait:hover .corner.bottom-4.left-4 {
+    transform: translate(6px, -6px);
+  }
+  .portrait:hover .corner.right-4.bottom-4 {
+    transform: translate(-6px, -6px);
+  }
+</style>

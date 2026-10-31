@@ -1,6 +1,8 @@
 ---
 import Section from '@/components/ui/Section.astro';
+import Portrait from '@/components/ui/Portrait.astro';
 import { interests, learning } from '@/data/skills';
+import { showPortrait } from '@/lib/portrait';
 
 const stats = [
   { value: 'C2', label: 'Inglés · LanguageCert' },
@@ -35,8 +37,24 @@ const terminal = [
       </div>
     </article>
 
+    <!-- Foto (si existe src/assets/hugo.jpg) -->
+    {
+      showPortrait && (
+        <div class="md:col-span-1 lg:col-span-2 lg:row-span-2" data-reveal style="--delay:80ms">
+          <Portrait class="aspect-[4/5] h-full w-full md:aspect-auto md:min-h-[26rem]" />
+        </div>
+      )
+    }
+
     <!-- Datos -->
-    <article class="card grid grid-cols-3 gap-4 p-8 sm:p-10 md:col-span-2 lg:col-span-2 lg:grid-cols-1" data-reveal style="--delay:80ms">
+    <article
+      class:list={[
+        'card grid grid-cols-3 gap-4 p-8 sm:p-10',
+        showPortrait ? 'md:col-span-1 md:grid-cols-1 lg:col-span-4 lg:grid-cols-3' : 'md:col-span-2 lg:col-span-2 lg:grid-cols-1',
+      ]}
+      data-reveal
+      style="--delay:80ms"
+    >
       {
         stats.map((s) => (
           <div class="flex flex-col justify-center">

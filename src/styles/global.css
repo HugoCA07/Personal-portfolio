@@ -48,6 +48,10 @@
 
   --shadow-soft: var(--shadow);
   --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
+
+  /* Solo tres radios en toda la web: tarjetas, piezas pequeñas y píldoras (rounded-full) */
+  --radius-card: 1.75rem;
+  --radius-xl: 0.75rem;
 }
 
 /* ---------- Base ---------- */
@@ -96,7 +100,7 @@
 @utility card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 1.75rem;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow);
 }
 
@@ -215,4 +219,37 @@
 }
 .prose-apple em {
   color: var(--ink);
+}
+
+/* ---------- Micro-interacciones (ver src/lib/interactions.ts) ---------- */
+/* Tarjeta con profundidad: se inclina hacia el cursor y un brillo lo sigue */
+[data-tilt] {
+  position: relative;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition:
+    transform 0.6s var(--ease-apple),
+    box-shadow 0.6s var(--ease-apple);
+}
+[data-tilt].is-tilting {
+  --lift: -4px;
+  transition:
+    transform 0.15s linear,
+    box-shadow 0.6s var(--ease-apple);
+}
+[data-tilt]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.12), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-apple);
+}
+[data-tilt].is-tilting::after {
+  opacity: 1;
+}
+[data-theme='light'] .card[data-tilt]::after {
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(0 113 227 / 0.07), transparent 45%);
 }

@@ -67,6 +67,8 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <Footer />
 
     <script>
+      import { initCounters, initTilt } from '@/lib/interactions';
+
       // Aparición suave de los elementos con [data-reveal] al entrar en pantalla
       const io = new IntersectionObserver(
         (entries) => {
@@ -80,6 +82,9 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
         { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
       );
       document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+      initTilt();
+      initCounters();
     </script>
   </body>
 </html>

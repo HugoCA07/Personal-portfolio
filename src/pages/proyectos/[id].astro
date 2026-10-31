@@ -72,11 +72,11 @@ const { Content } = await render(project);
       (cover || project.id === 'terraforge' || category !== 'course') && (
         <div class="px-5 sm:px-8">
           {cover || project.id !== 'terraforge' ? (
-            <div class="mx-auto aspect-[16/10] max-w-6xl overflow-hidden rounded-[2rem] sm:aspect-[16/8]">
+            <div class="mx-auto aspect-[16/10] max-w-6xl overflow-hidden rounded-card sm:aspect-[16/8]">
               <ProjectCover project={project} eager sizes="(min-width: 1152px) 1152px, 100vw" />
             </div>
           ) : (
-            <div class="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[radial-gradient(120%_90%_at_70%_0%,#1d3b2a,#050706)] sm:h-80">
+            <div class="mx-auto max-w-6xl overflow-hidden rounded-card bg-[radial-gradient(120%_90%_at_70%_0%,#1d3b2a,#050706)] sm:h-80">
               <PixelWorld seed={42} cols={96} rows={32} class="block h-auto w-full" />
             </div>
           )}
@@ -93,7 +93,7 @@ const { Content } = await render(project);
         {
           video && (
             <figure class="mt-16">
-              <div class="overflow-hidden rounded-[1.75rem] border border-line">
+              <div class="overflow-hidden rounded-card border border-line">
                 <LazyVideo src={video} poster={videoPoster} label={`Vídeo de ${title}`} class="aspect-video" />
               </div>
               <figcaption class="mt-3 text-sm text-muted">{title} en movimiento.</figcaption>
@@ -106,7 +106,7 @@ const { Content } = await render(project);
             <div class="mt-16 grid gap-5 sm:grid-cols-2">
               {gallery.map((g, i) => (
                 <figure class:list={[gallery.length % 2 === 1 && i === 0 && 'sm:col-span-2']} data-reveal>
-                  <div class="overflow-hidden rounded-[1.75rem] border border-line bg-surface-2">
+                  <div class="overflow-hidden rounded-card border border-line bg-surface-2">
                     <Picture
                       src={g.src}
                       alt={g.alt}

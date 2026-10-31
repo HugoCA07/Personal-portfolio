@@ -44,14 +44,14 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
     <!-- Menú móvil: panel de cristal flotante -->
     <div
       id="mobile-menu"
-      class="glass pointer-events-none absolute inset-x-0 top-full mt-2 origin-top scale-95 rounded-[1.75rem] p-3 opacity-0 transition-all duration-300 ease-(--ease-apple) lg:hidden"
+      class="glass pointer-events-none absolute inset-x-0 top-full mt-2 origin-top scale-95 rounded-card p-3 opacity-0 transition-all duration-300 ease-(--ease-apple) lg:hidden"
       inert
     >
       <ul class="flex flex-col">
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="block rounded-2xl px-4 py-3 text-lg font-medium tracking-tight transition-colors hover:bg-ink/5">
+              <a href={item.href} class="block rounded-xl px-4 py-3 text-lg font-medium tracking-tight transition-colors hover:bg-ink/5">
                 {item.label}
               </a>
             </li>

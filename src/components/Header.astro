@@ -1,6 +1,7 @@
 ---
 import { nav, site } from '@/config/site';
 import ThemeToggle from '@/components/ui/ThemeToggle.astro';
+import { url } from '@/lib/url';
 ---
 
 <header class="pointer-events-none fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-6">
@@ -9,13 +10,13 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
       class="glass pointer-events-auto flex h-13 items-center justify-between rounded-full pr-1.5 pl-5 sm:pl-6"
       aria-label="Principal"
     >
-      <a href="/" class="text-[15px] font-semibold tracking-tight whitespace-nowrap">{site.name}</a>
+      <a href={url('/')} class="text-[15px] font-semibold tracking-tight whitespace-nowrap">{site.name}</a>
 
       <ul class="hidden items-center gap-1 text-[13px] lg:flex">
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="rounded-full px-3.5 py-2 text-ink/70 transition-colors duration-300 hover:bg-ink/5 hover:text-ink">
+              <a href={url(item.href)} class="rounded-full px-3.5 py-2 text-ink/70 transition-colors duration-300 hover:bg-ink/5 hover:text-ink">
                 {item.label}
               </a>
             </li>
@@ -51,7 +52,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="block rounded-xl px-4 py-3 text-lg font-medium tracking-tight transition-colors hover:bg-ink/5">
+              <a href={url(item.href)} class="block rounded-xl px-4 py-3 text-lg font-medium tracking-tight transition-colors hover:bg-ink/5">
                 {item.label}
               </a>
             </li>

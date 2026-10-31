@@ -3,7 +3,9 @@ import '@fontsource-variable/inter';
 import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { site } from '@/config/site';
+import { languages, site } from '@/config/site';
+import { levels } from '@/data/skills';
+import { url } from '@/lib/url';
 
 interface Props {
   title?: string;
@@ -13,7 +15,26 @@ interface Props {
 const { title, description = site.description } = Astro.props;
 const fullTitle = title ? `${title} · ${site.shortName}` : `${site.name} — ${site.role}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/og.jpg', Astro.site).href;
+const ogImage = new URL(url('/og.jpg'), Astro.site).href;
+
+// Datos estructurados (schema.org/Person). Sin teléfono ni fecha de nacimiento.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: new URL(url('/'), Astro.site).href,
+  image: ogImage,
+  jobTitle: site.role,
+  email: `mailto:${site.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: site.location.split(',')[0], addressCountry: 'ES' },
+  alumniOf: [
+    { '@type': 'EducationalOrganization', name: 'IES Ramón y Cajal' },
+    { '@type': 'EducationalOrganization', name: 'IES Martínez Montañés' },
+  ],
+  knowsLanguage: languages.map((l) => l.name),
+  knowsAbout: levels.flatMap((l) => l.items),
+  sameAs: [site.github.url, site.linkedin],
+};
 ---
 
 <!doctype html>
@@ -24,8 +45,8 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
     <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 
@@ -40,6 +61,8 @@ const ogImage = new URL('/og.jpg', Astro.site).href;
     <meta property="og:image:alt" content={`${site.name} — ${site.role}`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
 
     <!-- Tema antes del primer pintado para evitar parpadeos -->
     <script is:inline>

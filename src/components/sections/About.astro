@@ -5,6 +5,7 @@ import { interests, learning } from '@/data/skills';
 import { codingSince, now } from '@/data/now';
 import { getProjects } from '@/lib/projects';
 import { showPortrait } from '@/lib/portrait';
+import { url } from '@/lib/url';
 
 const total = (await getProjects()).length;
 const offline = interests.filter((i) => i !== 'Informática');
@@ -60,7 +61,7 @@ const stats = [
                   <dt class="pt-0.5 font-mono text-[11px] tracking-[0.12em] text-muted uppercase">{n.label}</dt>
                   <dd class="leading-snug">
                     {n.href ? (
-                      <a href={n.href} class="underline decoration-line underline-offset-4 transition-colors hover:decoration-accent">
+                      <a href={url(n.href)} class="underline decoration-line underline-offset-4 transition-colors hover:decoration-accent">
                         {n.text}
                       </a>
                     ) : (

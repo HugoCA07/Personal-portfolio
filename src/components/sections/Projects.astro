@@ -4,6 +4,7 @@ import FeaturedProject from '@/components/ui/FeaturedProject.astro';
 import ProjectCard from '@/components/ui/ProjectCard.astro';
 import CourseList from '@/components/ui/CourseList.astro';
 import { getProjects } from '@/lib/projects';
+import { url } from '@/lib/url';
 
 // Tarjetas grandes solo para proyectos con historia (propios y de diseño);
 // los trabajos de clase van en una lista compacta.
@@ -43,7 +44,7 @@ const total = (await getProjects()).length;
 
   <div class="mt-14 flex justify-center" data-reveal>
     <a
-      href="/proyectos"
+      href={url('/proyectos/')}
       class="group inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:bg-surface-2"
     >
       Ver los {total} proyectos

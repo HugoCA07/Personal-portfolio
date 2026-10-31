@@ -1,3 +1,4 @@
+import { url } from '@/lib/url';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Project = CollectionEntry<'projects'>;
@@ -9,7 +10,7 @@ export async function getProjects(filter?: (p: Project) => boolean): Promise<Pro
   return all.sort((a, b) => a.data.order - b.data.order || (b.data.year ?? 0) - (a.data.year ?? 0));
 }
 
-export const projectUrl = (p: Project) => `/proyectos/${p.id}`;
+export const projectUrl = (p: Project) => url(`/proyectos/${p.id}/`);
 
 export const categoryLabel: Record<Category, string> = {
   project: 'Proyecto',

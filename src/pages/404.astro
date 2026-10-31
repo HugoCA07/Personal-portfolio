@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { url } from '@/lib/url';
 ---
 
 <BaseLayout title="Página no encontrada">
@@ -8,7 +9,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <p class="eyebrow">Error 404</p>
       <h1 class="mt-5 text-[clamp(3rem,12vw,8rem)] leading-none font-semibold tracking-[-0.05em]">Esta página no existe</h1>
       <p class="mx-auto mt-6 max-w-md text-lg text-muted">Lo que buscas no está aquí. Volvamos al inicio.</p>
-      <a href="/" class="mt-10 inline-block rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas">Volver al inicio</a>
+      <a href={url('/')} class="mt-10 inline-block rounded-full bg-ink px-6 py-3 text-sm font-medium text-canvas">Volver al inicio</a>
     </div>
   </section>
 </BaseLayout>

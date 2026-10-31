@@ -4,6 +4,7 @@
  * Con `prefers-reduced-motion` no se reproduce solo: muestra controles.
  */
 import { getImage } from 'astro:assets';
+import { url } from '@/lib/url';
 
 interface Props {
   src: string;
@@ -19,7 +20,7 @@ const type = src.endsWith('.webm') ? 'video/webm' : 'video/mp4';
 
 <video
   class:list={['lazy-video block w-full bg-black object-cover', className]}
-  data-src={src}
+  data-src={url(src)}
   data-type={type}
   poster={posterUrl}
   aria-label={label}

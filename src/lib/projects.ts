@@ -31,3 +31,21 @@ export const monogram = (title: string) =>
     .slice(0, 2)
     .map((w) => w[0]!.toUpperCase())
     .join('');
+
+/** Normaliza un nombre de tecnología: minúsculas y sin versión ("C++17" → "c++", "SFML 2.6" → "sfml"). */
+const normalizeTech = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/\s*\d+(\.\d+)*$/, '');
+
+/** Alias de nombres del stack que no coinciden literalmente con los de los proyectos. */
+const techAliases: Record<string, string[]> = {
+  'Java Swing': ['Swing'],
+};
+
+/** Proyectos que usan una tecnología del stack (un nombre puede agrupar varias: "PHP · Laravel"). */
+export function projectsUsing(skill: string, projects: Project[]): Project[] {
+  const terms = new Set([...skill.split(' · '), ...(techAliases[skill] ?? [])].map(normalizeTech));
+  return projects.filter((p) => p.data.stack.some((t) => terms.has(normalizeTech(t))));
+}

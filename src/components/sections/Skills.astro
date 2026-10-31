@@ -1,7 +1,11 @@
 ---
 import Section from '@/components/ui/Section.astro';
 import { languages } from '@/config/site';
+import TechItem from '@/components/ui/TechItem.astro';
 import { levelInfo, levels, skillGroups } from '@/data/skills';
+import { getProjects, projectsUsing } from '@/lib/projects';
+
+const projects = await getProjects();
 ---
 
 <Section
@@ -9,7 +13,7 @@ import { levelInfo, levels, skillGroups } from '@/data/skills';
   eyebrow="Stack"
   title="Lo que uso y cuánto lo domino"
   layout="split"
-  intro="Sin barras de porcentaje inventadas: tres niveles honestos y, debajo, el resto de herramientas con las que he trabajado."
+  intro="Tres niveles honestos, sin porcentajes inventados. Pulsa una tecnología con número para ver en qué proyectos la he usado."
   class="bg-surface-2/60"
 >
   <!-- Niveles: escala de tres pasos, de más a menos dominio -->
@@ -30,7 +34,7 @@ import { levelInfo, levels, skillGroups } from '@/data/skills';
             <ul class="mt-7 space-y-2.5">
               {items.map((item) => (
                 <li class:list={['leading-snug tracking-tight', level === 3 ? 'text-2xl font-semibold' : level === 2 ? 'text-xl font-medium' : 'text-lg text-ink/80']}>
-                  {item}
+                  <TechItem name={item} projects={projectsUsing(item, projects)} />
                 </li>
               ))}
             </ul>
@@ -48,7 +52,9 @@ import { levelInfo, levels, skillGroups } from '@/data/skills';
           <h3 class="eyebrow">{g.title}</h3>
           <ul class="mt-4 space-y-1.5 text-[15px]">
             {g.items.map((item) => (
-              <li>{item}</li>
+              <li>
+                <TechItem name={item} projects={projectsUsing(item, projects)} />
+              </li>
             ))}
           </ul>
         </div>

@@ -1,0 +1,66 @@
+---
+/**
+ * Una tecnología del stack. Si algún proyecto la usa, se puede desplegar para ver cuáles
+ * (con <details>: funciona sin JS y con teclado). `name="stack"` hace que solo haya una abierta.
+ */
+import { categoryLabel, projectUrl, type Project } from '@/lib/projects';
+
+interface Props {
+  name: string;
+  projects: Project[];
+  class?: string;
+}
+
+const { name, projects, class: className } = Astro.props;
+---
+
+{
+  projects.length > 0 ? (
+    <details name="stack" class:list={['tech group', className]}>
+      <summary class="inline-flex cursor-pointer items-center gap-2 rounded-xl transition-colors hover:text-accent">
+        {name}
+        <span class="count grid h-5 min-w-5 place-items-center rounded-full bg-accent/12 px-1.5 font-mono text-[11px] font-medium tracking-normal text-accent tabular-nums">
+          {projects.length}
+        </span>
+        <span class="sr-only">proyectos con {name}</span>
+      </summary>
+      <ul class="panel mt-2 mb-3 space-y-1 border-l-2 border-accent/40 pl-4 text-[15px] font-normal tracking-normal">
+        {projects.map((p) => (
+          <li>
+            <a href={projectUrl(p)} class="group/link flex items-baseline gap-2 py-0.5 text-ink hover:text-accent">
+              <span>{p.data.title}</span>
+              <span class="font-mono text-[10px] tracking-[0.12em] text-muted uppercase">{categoryLabel[p.data.category]}</span>
+              <span class="text-muted transition-transform group-hover/link:translate-x-0.5" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  ) : (
+    <span class:list={['block', className]}>{name}</span>
+  )
+}
+
+<style>
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .tech[open] .count {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .tech[open] .panel {
+    animation: drop 0.35s var(--ease-apple);
+  }
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+</style>

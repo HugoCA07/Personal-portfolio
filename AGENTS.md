@@ -8,7 +8,7 @@ Portfolio personal de **Hugo Cruz Aranda** (GitHub: `HugoCA07`). Sitio estático
 
 Se publica en **https://hugoca07.github.io/Personal-portfolio/** con GitHub Pages.
 
-Estilo: minimalista tipo Apple, con mucho espacio, tipografía grande y pocos colores, pero cada sección tiene su propia composición. Los intereses (informática, paisajes, coches) se mencionan con moderación: **no saturar la web con temática de coches ni referencias a Suiza**.
+Estilo: minimalista tipo Apple, con mucho espacio, tipografía grande y pocos colores, pero cada sección tiene su propia composición. Tono **profesional**: sin aficiones ni información personal (gustos, hobbies…), y sin temática de coches ni referencias a Suiza.
 
 **Cada dato vive en una sola sección**: formación → Trayectoria, prácticas → Experiencia, proyectos → Proyectos, tecnologías e idiomas → Stack. Las demás secciones no los repiten (como mucho enlazan).
 

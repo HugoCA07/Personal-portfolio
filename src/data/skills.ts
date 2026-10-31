@@ -38,6 +38,3 @@ export const skillGroups: SkillGroup[] = [
 
 /** Lo que estoy aprendiendo ahora mismo. */
 export const learning = ['C++ moderno', 'Desarrollo web de servidor'];
-
-/** Aficiones fuera de la programación. */
-export const interests = ['Informática', 'Paisajes', 'Coches', 'Videojuegos'];

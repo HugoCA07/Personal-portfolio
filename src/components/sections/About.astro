@@ -1,76 +1,38 @@
 ---
 /**
- * Sobre mí: quién soy y qué me mueve. Sin datos que ya estén en otra sección
- * (formación → Trayectoria, prácticas → Experiencia, proyectos → Proyectos, idiomas → Stack).
+ * Sobre mí: perfil profesional breve. Sin aficiones ni datos personales, y sin datos que ya
+ * estén en otra sección (formación → Trayectoria, prácticas → Experiencia, proyectos → Proyectos,
+ * tecnologías e idiomas → Stack).
  */
 import Portrait from '@/components/ui/Portrait.astro';
-import { interests, learning } from '@/data/skills';
+import { learning } from '@/data/skills';
 import { showPortrait } from '@/lib/portrait';
-
-const offline = interests.filter((i) => i !== 'Informática');
 ---
 
 <section id="sobre-mi" class="px-5 py-24 sm:px-8 sm:py-32 lg:py-40">
   <div class="mx-auto max-w-6xl">
-    <p class="eyebrow mb-10" data-reveal>Sobre mí</p>
+    <p class="eyebrow mb-10" data-reveal>Perfil</p>
 
     <div class="grid gap-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
-      <!-- Presentación editorial, sin tarjeta -->
       <div data-reveal>
         <p class="text-[clamp(1.85rem,3.6vw,2.8rem)] leading-[1.16] font-semibold tracking-[-0.03em] text-balance">
-          Soy Hugo. Me interesa tanto el código como la máquina en la que se ejecuta,{' '}
-          <span class="text-muted">y me gusta construir las cosas desde cero para saber cómo funcionan por dentro.</span>
+          Desarrollador web en formación con base en sistemas,{' '}
+          <span class="text-muted">capaz de trabajar tanto en el software como en el equipo en el que se ejecuta.</span>
         </p>
-        <div class="mt-12">
+      </div>
+
+      <div class="space-y-12" data-reveal style="--delay:80ms">
+        {showPortrait && <Portrait class="aspect-[4/5] w-full" />}
+        <p class="text-lg leading-relaxed text-muted">
+          Combino la formación en sistemas —montaje, diagnóstico y redes— con el desarrollo de aplicaciones: interfaces, backend y bases de datos.
+        </p>
+        <div>
           <p class="eyebrow mb-3">Ahora aprendiendo</p>
           <ul class="flex flex-wrap gap-2">
             {learning.map((l) => <li class="rounded-full bg-surface-2 px-3.5 py-1.5 text-sm">{l}</li>)}
           </ul>
         </div>
       </div>
-
-      <!-- Foto (si existe) y lo que hay fuera del código -->
-      <div class="space-y-12">
-        {
-          showPortrait && (
-            <div data-reveal>
-              <Portrait class="aspect-[4/5] w-full" />
-            </div>
-          )
-        }
-        <div data-reveal style="--delay:80ms">
-          <p class="eyebrow mb-4">Fuera del código</p>
-          <ul class="offline">
-            {
-              offline.map((i) => (
-                <li class="border-b border-line">
-                  <span class="word block py-3 text-[clamp(2.25rem,5vw,3.5rem)] leading-none font-semibold tracking-[-0.04em]">{i}</span>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="mt-5 text-muted">Me fijo mucho en los buenos diseños, sean de una interfaz o de un coche.</p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
-
-<style>
-  /* Las palabras se encienden al pasar por encima, y las demás se apagan */
-  .word {
-    color: var(--ink);
-    transition:
-      color 0.4s var(--ease-apple),
-      transform 0.5s var(--ease-apple);
-  }
-  @media (hover: hover) {
-    .offline:hover .word {
-      color: color-mix(in oklab, var(--muted) 55%, transparent);
-    }
-    .offline .word:hover {
-      color: var(--ink);
-      transform: translateX(0.4rem);
-    }
-  }
-</style>

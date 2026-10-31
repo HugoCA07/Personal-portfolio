@@ -23,7 +23,7 @@ export const site = {
 } as const;
 
 export const nav = [
-  { label: 'Sobre mí', href: '/#sobre-mi' },
+  { label: 'Perfil', href: '/#sobre-mi' },
   { label: 'Experiencia', href: '/#experiencia' },
   { label: 'Proyectos', href: '/#proyectos' },
   { label: 'Stack', href: '/#stack' },

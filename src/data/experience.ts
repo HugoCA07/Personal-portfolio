@@ -26,7 +26,7 @@ export const experience: Experience[] = [
     start: '2025-03',
     end: '2025-06',
     summary:
-      'Mis prácticas del ciclo de Sistemas Microinformáticos y Redes: equipos reales, averías reales y personas que necesitaban que todo volviera a funcionar.',
+      'Equipos reales, averías reales y personas que necesitaban que todo volviera a funcionar.',
     tasks: [
       'Mantenía el software y el hardware de los equipos y aplicaba medidas para prevenir fallos.',
       'Sustituía equipos averiados o piezas concretas de hardware.',

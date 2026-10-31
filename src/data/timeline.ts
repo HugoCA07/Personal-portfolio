@@ -23,35 +23,20 @@ export const timeline: Milestone[] = [
     text: 'Creo mi cuenta de GitHub y empiezo a programar en serio: C, C++, Python y mis primeras webs.',
   },
   {
-    year: 'Mar–Jun 2025',
-    title: 'Técnico de sistemas (FCT)',
-    text: 'Prácticas en App Informática, en Dos Hermanas: diagnóstico, reparación y mantenimiento de equipos.',
-  },
-  {
     year: '2025',
     title: 'DAW en el IES Martínez Montañés',
-    text: 'Desarrollo de Aplicaciones Web, de septiembre de 2025 a junio de 2027: Java, bases de datos, SQL y desarrollo web.',
-  },
-  {
-    year: '2026',
-    title: 'TerraForge',
-    text: 'Construyo desde cero un motor y juego sandbox 2D en C++ con generación procedural de mundos.',
-  },
-  {
-    year: '2026',
-    title: 'Gestor de aparcamientos',
-    text: 'Proyecto en equipo: una app de escritorio MVC en Java y MySQL para una cadena de parkings.',
+    text: 'Primer curso de Desarrollo de Aplicaciones Web: Java, bases de datos y SQL.',
   },
   {
     year: 'Ahora',
     title: '2º de DAW',
-    text: 'Desarrollo web en entorno cliente y servidor, diseño de interfaces y PHP.',
+    text: 'Segundo curso: desarrollo en entorno cliente y servidor, diseño de interfaces y el proyecto final.',
     current: true,
   },
   {
     year: 'Jun 2027',
     title: 'Fin de DAW',
-    text: 'Termino el ciclo de Desarrollo de Aplicaciones Web.',
+    text: 'Termino el ciclo.',
     future: true,
   },
 ];

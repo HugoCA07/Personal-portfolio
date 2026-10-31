@@ -1,38 +1,27 @@
 ---
+/**
+ * Sobre mí: quién soy y qué me mueve. Sin datos que ya estén en otra sección
+ * (formación → Trayectoria, prácticas → Experiencia, proyectos → Proyectos, idiomas → Stack).
+ */
 import Portrait from '@/components/ui/Portrait.astro';
-import { languages } from '@/config/site';
 import { interests, learning } from '@/data/skills';
-import { codingSince, now } from '@/data/now';
-import { getProjects } from '@/lib/projects';
 import { showPortrait } from '@/lib/portrait';
-import { url } from '@/lib/url';
 
-const total = (await getProjects()).length;
 const offline = interests.filter((i) => i !== 'Informática');
-const english = languages.find((l) => l.name === 'Inglés');
-const stats = [
-  { value: total, count: true, label: 'proyectos en este portfolio' },
-  { value: new Date().getFullYear() - codingSince, count: true, label: `años programando, desde ${codingSince}` },
-  { value: english?.level ?? '', count: false, label: 'de inglés (LanguageCert)' },
-];
 ---
 
 <section id="sobre-mi" class="px-5 py-24 sm:px-8 sm:py-32 lg:py-40">
   <div class="mx-auto max-w-6xl">
     <p class="eyebrow mb-10" data-reveal>Sobre mí</p>
 
-    <div class="grid gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
+    <div class="grid gap-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
       <!-- Presentación editorial, sin tarjeta -->
       <div data-reveal>
-        <p class="text-[clamp(1.75rem,3.4vw,2.6rem)] leading-[1.18] font-semibold tracking-[-0.03em] text-balance">
-          Soy Hugo. Estudio Desarrollo de Aplicaciones Web y antes pasé por Sistemas Microinformáticos y Redes,{' '}
-          <span class="text-muted">así que me interesa tanto el código como la máquina en la que se ejecuta.</span>
+        <p class="text-[clamp(1.85rem,3.6vw,2.8rem)] leading-[1.16] font-semibold tracking-[-0.03em] text-balance">
+          Soy Hugo. Me interesa tanto el código como la máquina en la que se ejecuta,{' '}
+          <span class="text-muted">y me gusta construir las cosas desde cero para saber cómo funcionan por dentro.</span>
         </p>
-        <p class="mt-8 max-w-2xl text-lg leading-relaxed text-muted">
-          Me gusta construir cosas desde cero para entender cómo funcionan: un motor de videojuegos en C++, una aplicación de escritorio en Java con
-          MySQL o el backend de una app para repartir gastos.
-        </p>
-        <div class="mt-10">
+        <div class="mt-12">
           <p class="eyebrow mb-3">Ahora aprendiendo</p>
           <ul class="flex flex-wrap gap-2">
             {learning.map((l) => <li class="rounded-full bg-surface-2 px-3.5 py-1.5 text-sm">{l}</li>)}
@@ -40,8 +29,8 @@ const stats = [
         </div>
       </div>
 
-      <!-- Foto (si existe) y "Ahora mismo" -->
-      <div class="space-y-10">
+      <!-- Foto (si existe) y lo que hay fuera del código -->
+      <div class="space-y-12">
         {
           showPortrait && (
             <div data-reveal>
@@ -50,50 +39,38 @@ const stats = [
           )
         }
         <div data-reveal style="--delay:80ms">
-          <p class="eyebrow mb-2 flex items-center gap-2">
-            <span class="size-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true"></span>
-            Ahora mismo
-          </p>
-          <dl class="divide-y divide-line">
+          <p class="eyebrow mb-4">Fuera del código</p>
+          <ul class="offline">
             {
-              now.map((n) => (
-                <div class="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-4 py-4">
-                  <dt class="pt-0.5 font-mono text-[11px] tracking-[0.12em] text-muted uppercase">{n.label}</dt>
-                  <dd class="leading-snug">
-                    {n.href ? (
-                      <a href={url(n.href)} class="underline decoration-line underline-offset-4 transition-colors hover:decoration-accent">
-                        {n.text}
-                      </a>
-                    ) : (
-                      n.text
-                    )}
-                  </dd>
-                </div>
+              offline.map((i) => (
+                <li class="border-b border-line">
+                  <span class="word block py-3 text-[clamp(2.25rem,5vw,3.5rem)] leading-none font-semibold tracking-[-0.04em]">{i}</span>
+                </li>
               ))
             }
-          </dl>
+          </ul>
+          <p class="mt-5 text-muted">Me fijo mucho en los buenos diseños, sean de una interfaz o de un coche.</p>
         </div>
       </div>
     </div>
-
-    <!-- Cifras -->
-    <dl class="mt-20 grid grid-cols-1 border-y border-line sm:grid-cols-3 sm:divide-x sm:divide-line" data-reveal>
-      {
-        stats.map((s) => (
-          <div class="flex items-baseline gap-4 border-b border-line py-7 last:border-b-0 sm:block sm:border-b-0 sm:px-8 sm:py-10 sm:first:pl-0">
-            <dt class="sr-only">{s.label}</dt>
-            <dd class="text-6xl font-semibold tracking-[-0.05em] tabular-nums sm:text-7xl" data-count={s.count ? s.value : undefined}>
-              {s.value}
-            </dd>
-            <dd class="text-sm text-muted sm:mt-2" aria-hidden="true">{s.label}</dd>
-          </div>
-        ))
-      }
-    </dl>
-
-    <p class="mt-10 text-lg text-muted" data-reveal>
-      Fuera del código: {offline.map((i) => i.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' y $1')}. Me fijo mucho en los buenos diseños, sean de
-      una interfaz o de un coche.
-    </p>
   </div>
 </section>
+
+<style>
+  /* Las palabras se encienden al pasar por encima, y las demás se apagan */
+  .word {
+    color: var(--ink);
+    transition:
+      color 0.4s var(--ease-apple),
+      transform 0.5s var(--ease-apple);
+  }
+  @media (hover: hover) {
+    .offline:hover .word {
+      color: color-mix(in oklab, var(--muted) 55%, transparent);
+    }
+    .offline .word:hover {
+      color: var(--ink);
+      transform: translateX(0.4rem);
+    }
+  }
+</style>

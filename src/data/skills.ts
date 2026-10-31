@@ -33,7 +33,7 @@ export const skillGroups: SkillGroup[] = [
     title: 'Sistemas',
     items: ['Configuración de redes', 'Montaje de hardware', 'Gestión de sistemas operativos'],
   },
-  { title: 'También he usado', items: ['Python', 'C', 'Astro', 'XML · XSLT · XQuery', 'SFML', 'Java Swing'] },
+  { title: 'También he usado', items: ['Python', 'C', 'Astro', 'XML · XSLT · XQuery', 'SFML', 'Java Swing', 'Figma'] },
 ];
 
 /** Lo que estoy aprendiendo ahora mismo. */

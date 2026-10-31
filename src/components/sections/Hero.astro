@@ -34,7 +34,7 @@ const photo = { author: 'Go Wild', url: 'https://unsplash.com/photos/V0yAek6BgGk
         {site.name.split(' ').slice(0, 2).join(' ')}<span class="text-accent">.</span>
       </h1>
       <p class="hero-in mt-6 max-w-xl text-lg leading-relaxed text-balance text-white/85 sm:text-2xl" style="--d:350ms">
-        {site.role}. Construyo cosas desde cero, del motor de un juego a la web.
+        {site.role}, desde {site.location.split(',')[0]}.
       </p>
       <div class="hero-in mt-9 flex flex-wrap items-center justify-center gap-3" style="--d:450ms">
         <a
@@ -52,7 +52,7 @@ const photo = { author: 'Go Wild', url: 'https://unsplash.com/photos/V0yAek6BgGk
     <!-- Fase 2: frase que aparece al deslizar -->
     <div class="statement pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center" aria-hidden="true">
       <p class="max-w-4xl text-[clamp(2rem,6vw,4.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-balance text-white">
-        Primero aprendí a abrir ordenadores. <span class="text-white/70">Ahora escribo lo que se ejecuta dentro</span>
+        ¿Qué hay dentro de un ordenador? <span class="text-white/70">Vamos a abrir uno</span>
       </p>
     </div>
 
@@ -79,8 +79,12 @@ const photo = { author: 'Go Wild', url: 'https://unsplash.com/photos/V0yAek6BgGk
       calc(var(--p) * 3.5%) calc(var(--p) * 4%) calc(var(--p) * 3.5%) calc(var(--p) * 4%) round calc(var(--p) * 1.75rem)
     );
   }
+  /* --mx / --my (-1 a 1): la foto se desplaza un poco siguiendo al cursor, menos cuanto más se ha hecho scroll */
   .photo {
     transform: scale(calc(1.16 - var(--p) * 0.16)) translateY(calc(var(--p) * 3%));
+    /* El parallax va aparte (propiedad translate) para suavizarlo sin retrasar el scroll */
+    translate: calc(var(--mx, 0) * -1.4% * (1 - var(--p))) calc(var(--my, 0) * -1.4% * (1 - var(--p)));
+    transition: translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
     transform-origin: 50% 40%;
   }
   .shade {
@@ -159,5 +163,22 @@ const photo = { author: 'Go Wild', url: 'https://unsplash.com/photos/V0yAek6BgGk
   import { scrollProgress } from '@/lib/scroll-progress';
 
   // Escribe --p (0→1) en la sección; el CSS de arriba hace el resto
-  scrollProgress(document.querySelector<HTMLElement>('.hero')!);
+  const hero = document.querySelector<HTMLElement>('.hero')!;
+  scrollProgress(hero);
+
+  // Parallax suave con el cursor (solo con ratón y sin "reducir movimiento")
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let frame = 0;
+    hero.addEventListener('pointermove', (e) => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        hero.style.setProperty('--mx', ((e.clientX / innerWidth) * 2 - 1).toFixed(3));
+        hero.style.setProperty('--my', ((e.clientY / innerHeight) * 2 - 1).toFixed(3));
+      });
+    });
+    hero.addEventListener('pointerleave', () => {
+      hero.style.setProperty('--mx', '0');
+      hero.style.setProperty('--my', '0');
+    });
+  }
 </script>

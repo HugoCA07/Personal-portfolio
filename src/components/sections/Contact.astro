@@ -12,12 +12,30 @@ import { site } from '@/config/site';
       Si tienes una oportunidad, un proyecto en el que pueda echar una mano o simplemente quieres hablar de código, escríbeme.
     </p>
     <div class="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <a
-        href={`mailto:${site.email}`}
-        class="w-full rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-canvas transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98] sm:w-auto"
-      >
-        {site.email}
-      </a>
+      <div class="flex w-full items-center gap-2 sm:w-auto">
+        <a
+          href={`mailto:${site.email}`}
+          class="flex-1 rounded-full bg-ink px-7 py-3.5 text-sm font-medium text-canvas transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98] sm:flex-none"
+        >
+          {site.email}
+        </a>
+        <!-- Copiar el email al portapapeles -->
+        <button
+          type="button"
+          class="copy relative grid size-12 shrink-0 place-items-center rounded-full border border-line transition-colors hover:bg-surface-2"
+          data-copy={site.email}
+          aria-label="Copiar email"
+        >
+          <svg class="icon-copy size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2.5"></rect>
+            <path d="M5 15V6a2 2 0 0 1 2-2h9"></path>
+          </svg>
+          <svg class="icon-done absolute size-[18px] text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m5 12.5 4.5 4.5L19 7.5"></path>
+          </svg>
+          <span class="toast pointer-events-none absolute -top-10 left-1/2 rounded-full bg-ink px-3 py-1.5 text-xs font-medium whitespace-nowrap text-canvas" role="status"></span>
+        </button>
+      </div>
       <a
         href={site.github.url}
         target="_blank"
@@ -37,3 +55,47 @@ import { site } from '@/config/site';
     </div>
   </div>
 </section>
+
+<style>
+  .icon-done,
+  .toast {
+    opacity: 0;
+    transition:
+      opacity 0.3s var(--ease-apple),
+      transform 0.3s var(--ease-apple);
+  }
+  .icon-copy {
+    transition: opacity 0.3s var(--ease-apple);
+  }
+  .toast {
+    transform: translate(-50%, 6px);
+  }
+  .copy[data-done] .icon-copy {
+    opacity: 0;
+  }
+  .copy[data-done] .icon-done {
+    opacity: 1;
+  }
+  .copy[data-done] .toast {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    let timer = 0;
+    btn.addEventListener('click', async () => {
+      const toast = btn.querySelector('.toast')!;
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy!);
+        toast.textContent = 'Email copiado';
+      } catch {
+        toast.textContent = btn.dataset.copy!;
+      }
+      btn.setAttribute('data-done', '');
+      clearTimeout(timer);
+      timer = window.setTimeout(() => btn.removeAttribute('data-done'), 1800);
+    });
+  });
+</script>

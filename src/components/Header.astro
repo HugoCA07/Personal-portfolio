@@ -25,6 +25,18 @@ import { url } from '@/lib/url';
       </ul>
 
       <div class="flex items-center">
+        <button
+          type="button"
+          class="flex h-10 items-center gap-2 rounded-full px-2.5 text-ink transition-colors hover:bg-ink/5"
+          aria-label="Buscar en la web (Ctrl + K)"
+          data-open-palette
+        >
+          <svg class="size-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
+          </svg>
+          <kbd class="hidden rounded-md border border-ink/15 px-1.5 py-0.5 font-mono text-[10px] text-ink/60 xl:block" data-kbd>Ctrl K</kbd>
+        </button>
         <ThemeToggle />
         <button
           id="menu-button"
@@ -123,6 +135,7 @@ import { url } from '@/lib/url';
 
 <script>
   const header = document.querySelector('header')!;
+  if (/Mac|iPhone|iPad/.test(navigator.platform)) header.querySelectorAll('[data-kbd]').forEach((k) => (k.textContent = '⌘ K'));
   const button = document.getElementById('menu-button')!;
   const menu = document.getElementById('mobile-menu')!;
 

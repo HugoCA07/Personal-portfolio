@@ -10,6 +10,8 @@ Se publica en **https://hugoca07.github.io/Personal-portfolio/** con GitHub Page
 
 Estilo: minimalista tipo Apple, con mucho espacio, tipografía grande y pocos colores, pero cada sección tiene su propia composición. Los intereses (informática, paisajes, coches) se mencionan con moderación: **no saturar la web con temática de coches ni referencias a Suiza**.
 
+**Cada dato vive en una sola sección**: formación → Trayectoria, prácticas → Experiencia, proyectos → Proyectos, tecnologías e idiomas → Stack. Las demás secciones no los repiten (como mucho enlazan).
+
 Contenido: **no inventes datos sobre Hugo.** Si falta algo, deja `TODO(Hugo): …`. Privacidad: **nunca publiques su teléfono ni su fecha de nacimiento**. Estudia DAW hasta junio de 2027: no escribas "titulado en DAW".
 
 ## Comandos
@@ -28,7 +30,7 @@ Antes de dar un cambio por terminado, ejecuta `npm run build` y comprueba que no
 ```
 src/
 ├── config/site.ts          # Datos personales, navegación, redes e idiomas. Fuente única de verdad.
-├── data/                   # Datos estructurados: stack, timeline, experiencia, "ahora mismo", escena del portátil
+├── data/                   # Datos estructurados: stack, timeline, experiencia, escena del portátil
 ├── content/projects/*.md   # Un Markdown por proyecto (colección de contenido)
 ├── content.config.ts       # Esquema Zod de la colección `projects` (incluye imágenes y vídeo)
 ├── lib/                    # Helpers: proyectos, url(), scroll-progress, teardown-renderer, interacciones, foto
@@ -36,7 +38,7 @@ src/
 ├── layouts/BaseLayout.astro# <head>, SEO, JSON-LD, tema, header/footer, animaciones
 ├── components/
 │   ├── sections/           # Hero, LaptopTeardown, About, Experience, Projects, Skills, Journey, Contact
-│   └── ui/                 # Section, ProjectCard, ProjectCover, CourseList, LazyVideo, Portrait…
+│   └── ui/                 # Section, ProjectCard, ProjectCover, CourseList, TechItem, LazyVideo, Portrait…
 ├── pages/                  # /, /proyectos, /proyectos/[id], 404 y og.jpg (imagen para compartir)
 └── styles/global.css       # Tokens de diseño, radios, temas claro/oscuro, utilidades
 ```
@@ -50,7 +52,7 @@ src/
 - **Imágenes de un proyecto:** van en `src/assets/projects/<slug>/` (cada carpeta tiene un README con lo que se espera). En el frontmatter: `cover`, `coverAlt` y `gallery` (rutas relativas al Markdown). `video` es una ruta de `public/` (p. ej. `/videos/terraforge.mp4`) y `videoPoster` una imagen. Sin `cover` se pinta un marcador de posición con el color `accent`.
 - **Foto personal:** `src/assets/hugo.jpg` (o .png/.webp). Se detecta sola (`src/lib/portrait.ts`). Sin foto, solo se ve un hueco en desarrollo.
 - **Nueva sección en la home:** crea `src/components/sections/X.astro` y añádela en `src/pages/index.astro`. Puedes usar `<Section id eyebrow title intro layout="stack|split">`, pero no la uses en todas: cada sección debe tener una composición propia. Si va en el menú, añádela a `nav` en `src/config/site.ts`.
-- **Datos personales / stack / hitos / experiencia / "ahora mismo":** edita `src/config/site.ts` o `src/data/*`. No escribas estos datos a mano dentro de los componentes.
+- **Datos personales / stack / hitos / experiencia:** edita `src/config/site.ts` o `src/data/*`. No escribas estos datos a mano dentro de los componentes.
 - **Página nueva:** `src/pages/<ruta>.astro` envuelta en `BaseLayout` (acepta `title` y `description`).
 
 ## Enlaces internos y despliegue
@@ -71,6 +73,7 @@ src/
   - Son **fotografías reales** de Unsplash (`src/assets/teardown/`), no un modelo ni una ilustración: no la sustituyas por dibujos, CSS 3D o modelos 3D.
   - Fotos, tramos de progreso, encuadre (`focus`), crédito y textos están en `src/data/teardown.ts`.
   - El pintado está en `src/lib/teardown-renderer.ts`, detrás de la interfaz `TeardownRenderer`: las fotos se funden y hacen un acercamiento lento. Podría sustituirse por un vídeo o frames.
+  - `spots`: puntos interactivos sobre las piezas, en % de la foto original. El renderizador los recoloca según el recorte (`object-fit: cover`) y oculta los que caen sobre el texto o en el borde.
   - Con movimiento reducido o sin JS se ve una lista estática de foto + texto.
 - **Header:** píldora *liquid glass* (`.glass` en `Header.astro`). Sobre secciones con `data-dark` pasa a cristal oscuro.
 - **Aparición:** `data-reveal` (y opcionalmente `style="--delay:80ms"`). No lo pongas en el mismo elemento que tiene transiciones de hover; envuélvelo.
@@ -78,6 +81,8 @@ src/
   - `data-tilt="3"`: inclinación y brillo que sigue al cursor.
   - `data-count="13"`: el número cuenta al entrar en pantalla.
   - Ambas se desactivan con movimiento reducido o sin ratón.
+- **Paleta de comandos** (`CommandPalette.astro`, Ctrl/⌘ + K o botón del header): secciones, proyectos (también por tecnología) y acciones. Se genera sola desde `nav`, `site` y la colección de proyectos.
+- **Stack ↔ proyectos:** `TechItem.astro` + `projectsUsing()` (`src/lib/projects.ts`) despliegan los proyectos que usan cada tecnología. Si un nombre del stack no coincide con el de los proyectos, añade un alias en `techAliases`.
 - Utilidades propias: `card`, `eyebrow`, `text-gradient`, `prose-apple` (contenido Markdown).
 - Respeta `prefers-reduced-motion` en cualquier animación nueva. Anima solo `transform` y `opacity`.
 - Mobile first: comprueba siempre a ~390 px de ancho, sin scroll horizontal. En rejillas, usa `grid-cols-[minmax(0,1fr)]` si hay texto que no se parte.

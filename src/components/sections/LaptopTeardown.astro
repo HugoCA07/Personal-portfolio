@@ -21,30 +21,57 @@ const widths = [640, 1024, 1600, 2200];
 
   <!-- Versión animada: fotos a pantalla completa fijas mientras se hace scroll -->
   <div class="animated sticky top-0 h-svh overflow-hidden">
-    <div class="absolute inset-0" aria-hidden="true">
+    <div class="absolute inset-0">
       {
         stages.map((s, i) => (
-          <div class="shot absolute inset-0" data-shot data-from={s.from} data-to={s.to} style={i === 0 ? undefined : 'opacity:0;visibility:hidden'}>
-            <Picture
-              src={s.image}
-              alt=""
-              formats={['avif', 'webp']}
-              widths={widths}
-              sizes={sizes}
-              loading="lazy"
-              class="size-full object-cover will-change-transform"
-              style={`object-position:${s.focus ?? '50% 50%'}`}
-              pictureAttributes={{ class: 'contents' }}
-            />
+          <div
+            class="shot absolute inset-0"
+            data-shot
+            data-from={s.from}
+            data-to={s.to}
+            data-w={s.image.width}
+            data-h={s.image.height}
+            data-focus={s.focus ?? '50% 50%'}
+            data-active={i === 0 ? '' : undefined}
+            style={i === 0 ? undefined : 'opacity:0;visibility:hidden'}
+          >
+            <div class="absolute inset-0 will-change-transform" data-frame aria-hidden="true">
+              <Picture
+                src={s.image}
+                alt=""
+                formats={['avif', 'webp']}
+                widths={widths}
+                sizes={sizes}
+                loading="lazy"
+                class="size-full object-cover"
+                style={`object-position:${s.focus ?? '50% 50%'}`}
+                pictureAttributes={{ class: 'contents' }}
+              />
+            </div>
+            <div class="scrim pointer-events-none absolute inset-0" aria-hidden="true" />
+            {s.spots && (
+              <ul class="spots absolute inset-0 will-change-transform" data-frame aria-label={`Piezas: ${s.kicker}`}>
+                {s.spots.map((spot) => (
+                  <li class="spot absolute" data-spot data-x={spot.x} data-y={spot.y} style={`left:${spot.x}%;top:${spot.y}%`}>
+                    <button type="button" class="spot-btn" aria-expanded="false">
+                      <span class="spot-dot" aria-hidden="true" />
+                      <span class="spot-tip">
+                        <strong class="block font-mono text-[11px] tracking-[0.12em] text-[#64b5ff] uppercase">{spot.label}</strong>
+                        <span class="mt-1 block text-[13px] leading-snug text-white/85">{spot.text}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))
       }
-      <div class="scrim absolute inset-0"></div>
     </div>
 
     <!-- Textos de cada tramo (contenido real, accesible) -->
-    <div class="copy absolute inset-x-0 bottom-0 px-6 pb-12 sm:px-10 sm:pb-16 lg:inset-y-0 lg:right-auto lg:flex lg:w-[46%] lg:items-center lg:pb-0 lg:pl-[max(2.5rem,calc((100vw-72rem)/2))]">
-      <ol class="stages grid w-full max-w-md">
+    <div class="copy pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-12 sm:px-10 sm:pb-16 lg:inset-y-0 lg:right-auto lg:flex lg:w-[46%] lg:items-center lg:pb-0 lg:pl-[max(2.5rem,calc((100vw-72rem)/2))]">
+      <ol class="stages grid w-full max-w-md" data-avoid>
         {
           stages.map((s, i) => (
             <li class="stage" data-stage data-from={s.from} data-to={s.to} style={i === 0 ? undefined : 'opacity:0'}>
@@ -52,13 +79,13 @@ const widths = [640, 1024, 1600, 2200];
               <h3 class="mt-3 text-[clamp(1.9rem,4.4vw,3.25rem)] leading-[1.04] font-semibold tracking-[-0.03em] text-balance">{s.title}</h3>
               <p class="mt-3 text-base leading-relaxed text-white/75 sm:text-lg">{s.text}</p>
               {s.link && (
-                <a href={url(s.link.href)} class="group mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#64b5ff]">
+                <a href={url(s.link.href)} class="group pointer-events-auto mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#64b5ff]">
                   {s.link.label} <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </a>
               )}
               <p class="mt-6 font-mono text-[10px] text-white/45">
                 Foto:{' '}
-                <a href={s.credit.url} target="_blank" rel="noopener" class="underline-offset-2 hover:text-white hover:underline">
+                <a href={s.credit.url} target="_blank" rel="noopener" class="pointer-events-auto underline-offset-2 hover:text-white hover:underline">
                   {s.credit.author} · Unsplash
                 </a>
               </p>
@@ -132,6 +159,93 @@ const widths = [640, 1024, 1600, 2200];
         linear-gradient(to bottom, rgb(5 5 6 / 0.5), rgb(5 5 6 / 0) 20%);
     }
   }
+  /* ---------- Puntos interactivos sobre las piezas ---------- */
+  .spot {
+    width: 0;
+    height: 0;
+    z-index: 1;
+    transition: opacity 0.5s var(--ease-apple);
+  }
+  .spot:hover,
+  .spot:has([aria-expanded='true']) {
+    z-index: 5;
+  }
+  .shot:not([data-active]) .spot {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .spot-btn {
+    position: absolute;
+    left: -22px;
+    top: -22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .spot-dot {
+    position: absolute;
+    inset: 14px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow:
+      0 0 0 4px rgb(41 151 255 / 0.55),
+      0 2px 10px rgb(0 0 0 / 0.5);
+    transition: transform 0.3s var(--ease-apple);
+  }
+  .spot-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    border: 2px solid rgb(41 151 255 / 0.8);
+    animation: ping 2.2s var(--ease-apple) infinite;
+  }
+  @keyframes ping {
+    from {
+      transform: scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+  .spot-tip {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    width: max-content;
+    max-width: min(16rem, 60vw);
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.75rem;
+    text-align: left;
+    background: rgb(12 12 14 / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    backdrop-filter: blur(14px) saturate(160%);
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    pointer-events: none;
+    transition:
+      opacity 0.3s var(--ease-apple),
+      transform 0.3s var(--ease-apple);
+  }
+  .spot.flip .spot-tip {
+    left: auto;
+    right: 40px;
+    transform: translate(6px, -50%);
+  }
+  .spot-btn:hover .spot-dot,
+  .spot-btn[aria-expanded='true'] .spot-dot {
+    transform: scale(1.25);
+  }
+  .spot-btn:hover .spot-tip,
+  .spot-btn:focus-visible .spot-tip,
+  .spot-btn[aria-expanded='true'] .spot-tip {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
   .stage {
     grid-area: 1 / 1;
     align-self: end;
@@ -186,6 +300,22 @@ const widths = [640, 1024, 1600, 2200];
   // Para usar otro renderizador (p. ej. un vídeo o frames en <canvas>), cámbialo aquí.
   const renderer: TeardownRenderer = createPhotoRenderer(root);
 
+  // Puntos: se abren al tocar (móvil) y se cierran al tocar fuera o al cambiar de foto
+  const spotButtons = [...root.querySelectorAll<HTMLButtonElement>('.spot-btn')];
+  const closeSpots = (except?: Element) =>
+    spotButtons.forEach((b) => b !== except && b.setAttribute('aria-expanded', 'false'));
+  spotButtons.forEach((btn) =>
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      closeSpots(btn);
+      btn.setAttribute('aria-expanded', String(open));
+    }),
+  );
+  document.addEventListener('click', () => closeSpots());
+  new ResizeObserver(() => renderer.resize?.()).observe(root.querySelector('.animated')!);
+
+  let lastStage = -1;
   scrollProgress(root, {
     reducedValue: 1,
     onProgress(p) {
@@ -200,6 +330,10 @@ const widths = [640, 1024, 1600, 2200];
         el.style.visibility = o === 0 ? 'hidden' : 'visible';
       });
       counter.textContent = String(current + 1).padStart(2, '0');
+      if (current !== lastStage) {
+        lastStage = current;
+        closeSpots();
+      }
     },
   });
 </script>

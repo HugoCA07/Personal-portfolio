@@ -1,544 +1,145 @@
 ---
 /**
- * Escena "Por dentro": un portátil genérico que se abre y se desmonta con el scroll.
- * - Tiempos, movimientos y textos: `src/data/teardown.ts`.
- * - Pintado: `src/lib/teardown-renderer.ts` (CSS 3D; intercambiable por frames en <canvas>).
+ * Escena "Por dentro": un portátil real, de cerrado a desmontado, contado con fotografías
+ * que se funden al hacer scroll.
+ * - Fotos, tramos y textos: `src/data/teardown.ts`.
+ * - Pintado: `src/lib/teardown-renderer.ts` (fundido de fotos; intercambiable).
  * - Progreso: `src/lib/scroll-progress.ts` (el mismo helper que usa el hero).
+ * Con `prefers-reduced-motion` (o sin JS) se muestra una versión estática: foto + texto en lista.
  */
-import { camera, parts, stages, type Part, type PartId } from '@/data/teardown';
-import { seeded } from '@/lib/random';
+import { Picture } from 'astro:assets';
+import { stages } from '@/data/teardown';
 import { url } from '@/lib/url';
 
-const W = camera.width;
-const H = camera.height;
-const top = parts.filter((p) => !p.parent);
-const childrenOf = (id: PartId) => parts.filter((p) => p.parent === id);
-
-const box = (p: Part) => {
-  const [x, y, w, h] = p.rect;
-  return `left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:translateZ(${p.z}px);${p.origin ? `transform-origin:${p.origin};` : ''}`;
-};
-
-// Teclado: filas de teclas generadas
-const kb = { x: 34, y: 26, w: W - 68, h: 140, gap: 4 };
-const rows = [
-  { n: 14, h: 0.6 },
-  { n: 14, h: 1 },
-  { n: 14, h: 1 },
-  { n: 13, h: 1 },
-  { n: 12, h: 1 },
-];
-const unit = (kb.h - kb.gap * rows.length) / (rows.reduce((s, r) => s + r.h, 0) + 1);
-const keys: { x: number; y: number; w: number; h: number }[] = [];
-let ky = kb.y;
-for (const row of rows) {
-  const kw = (kb.w - kb.gap * (row.n - 1)) / row.n;
-  for (let i = 0; i < row.n; i++) keys.push({ x: kb.x + i * (kw + kb.gap), y: ky, w: kw, h: unit * row.h });
-  ky += unit * row.h + kb.gap;
-}
-// Última fila: modificadores + barra espaciadora + flechas
-const lastW = (kb.w - kb.gap * 8) / 12;
-[1, 1, 1.2, 4.6, 1.2, 1, 1, 1, 1].reduce((x, f) => {
-  keys.push({ x, y: ky, w: lastW * f, h: unit });
-  return x + lastW * f + kb.gap;
-}, kb.x);
-
-// Pantalla: líneas de "código" abstractas
-const rnd = seeded(31);
-const code = Array.from({ length: 17 }, (_, i) => {
-  const indent = [0, 1, 1, 2, 2, 1, 0][Math.floor(rnd() * 7)];
-  const pieces = 1 + Math.floor(rnd() * 3);
-  let x = 46 + indent * 18;
-  return Array.from({ length: pieces }, () => {
-    const w = 18 + rnd() * 70;
-    const seg = { x, y: 40 + i * 12.5, w, accent: rnd() < 0.2 };
-    x += w + 6;
-    return seg;
-  }).filter((s) => s.x + s.w < W - 40);
-});
-
-// Placa base: pistas
-const traces = Array.from({ length: 16 }, (_, i) => {
-  const y = 10 + i * 7.6;
-  const x0 = 8 + rnd() * 40;
-  const jog = rnd() < 0.5 ? 6 : -6;
-  const x1 = 120 + rnd() * 120;
-  return { d: `M${x0} ${y} H${x1} l6 ${jog} H${384 - rnd() * 50}`, accent: i % 5 === 2 };
-});
+const pad = (n: number) => String(n).padStart(2, '0');
+const sizes = '100vw';
+const widths = [640, 1024, 1600, 2200];
 ---
 
-<section
-  id="por-dentro"
-  class="teardown relative bg-[#07080b] text-white"
-  aria-labelledby="teardown-title"
-  data-teardown
-  data-dark
-  style="--p:0;--k:1"
->
-  <div class="stick sticky top-0 flex h-svh flex-col overflow-hidden lg:flex-row">
+<section id="por-dentro" class="teardown relative bg-[#050506] text-white" aria-labelledby="teardown-title" data-teardown data-dark style="--p:0">
+  <h2 id="teardown-title" class="sr-only">Por dentro: un portátil, pieza a pieza</h2>
+
+  <!-- Versión animada: fotos a pantalla completa fijas mientras se hace scroll -->
+  <div class="animated sticky top-0 h-svh overflow-hidden">
+    <div class="absolute inset-0" aria-hidden="true">
+      {
+        stages.map((s, i) => (
+          <div class="shot absolute inset-0" data-shot data-from={s.from} data-to={s.to} style={i === 0 ? undefined : 'opacity:0;visibility:hidden'}>
+            <Picture
+              src={s.image}
+              alt=""
+              formats={['avif', 'webp']}
+              widths={widths}
+              sizes={sizes}
+              loading="lazy"
+              class="size-full object-cover will-change-transform"
+              style={`object-position:${s.focus ?? '50% 50%'}`}
+              pictureAttributes={{ class: 'contents' }}
+            />
+          </div>
+        ))
+      }
+      <div class="scrim absolute inset-0"></div>
+    </div>
+
     <!-- Textos de cada tramo (contenido real, accesible) -->
-    <div class="copy relative z-10 order-2 px-6 pb-10 sm:px-10 lg:order-1 lg:flex lg:w-[40%] lg:items-center lg:pb-0 lg:pl-[max(2.5rem,calc((100vw-72rem)/2))]">
-      <h2 id="teardown-title" class="sr-only">Por dentro: un portátil desmontado pieza a pieza</h2>
-      <ol class="stages w-full max-w-md">
+    <div class="copy absolute inset-x-0 bottom-0 px-6 pb-12 sm:px-10 sm:pb-16 lg:inset-y-0 lg:right-auto lg:flex lg:w-[46%] lg:items-center lg:pb-0 lg:pl-[max(2.5rem,calc((100vw-72rem)/2))]">
+      <ol class="stages grid w-full max-w-md">
         {
-          stages.map((s) => (
-            <li class="stage" data-stage>
-              <p class="font-mono text-xs tracking-[0.16em] text-[#2997ff] uppercase">{s.kicker}</p>
-              <h3 class="mt-3 text-[clamp(1.75rem,4.2vw,3rem)] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">{s.title}</h3>
-              <p class="mt-3 text-base leading-relaxed text-white/60 sm:text-lg">{s.text}</p>
+          stages.map((s, i) => (
+            <li class="stage" data-stage data-from={s.from} data-to={s.to} style={i === 0 ? undefined : 'opacity:0'}>
+              <p class="font-mono text-xs tracking-[0.16em] text-[#64b5ff] uppercase">{s.kicker}</p>
+              <h3 class="mt-3 text-[clamp(1.9rem,4.4vw,3.25rem)] leading-[1.04] font-semibold tracking-[-0.03em] text-balance">{s.title}</h3>
+              <p class="mt-3 text-base leading-relaxed text-white/75 sm:text-lg">{s.text}</p>
               {s.link && (
-                <a href={url(s.link.href)} class="group mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#2997ff]">
+                <a href={url(s.link.href)} class="group mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#64b5ff]">
                   {s.link.label} <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </a>
               )}
+              <p class="mt-6 font-mono text-[10px] text-white/45">
+                Foto:{' '}
+                <a href={s.credit.url} target="_blank" rel="noopener" class="underline-offset-2 hover:text-white hover:underline">
+                  {s.credit.author} · Unsplash
+                </a>
+              </p>
             </li>
           ))
         }
       </ol>
     </div>
 
-    <!-- Escena 3D (decorativa) -->
-    <div class="viewport relative order-1 mt-16 min-h-0 flex-1 lg:order-2 lg:mt-0" aria-hidden="true" data-viewport>
-      <div class="glow absolute inset-0"></div>
-      <div class="fit absolute top-1/2 left-1/2" style={`width:${W}px;height:${H}px`}>
-        <div class="scene" data-scene style={`transform:rotateX(${camera.rx}deg) rotateZ(${camera.rz}deg)`}>
-          {
-            top.map((p) => (
-              <div class:list={['part', `part-${p.id}`]} data-part={p.id} style={box(p)}>
-                {/* Carcasa inferior: bandeja con paredes */}
-                {p.id === 'base' && (
-                  <>
-                    <div class="face base-face">
-                      <svg viewBox={`0 0 ${W} ${H}`} class="size-full">
-                        <rect x="10" y="10" width={W - 20} height={H - 20} rx="10" class="ln" />
-                        {[
-                          [22, 22],
-                          [W - 22, 22],
-                          [22, H - 22],
-                          [W - 22, H - 22],
-                          [W / 2, H - 22],
-                        ].map(([cx, cy]) => (
-                          <circle cx={cx} cy={cy} r="3.5" class="ln" />
-                        ))}
-                        {Array.from({ length: 22 }, (_, i) => (
-                          <rect x={100 + i * 11} y="32" width="5" height="26" rx="2.5" class="ln" />
-                        ))}
-                      </svg>
-                    </div>
-                    <i class="side up f" style="--t:8px" />
-                    <i class="side up b" style="--t:8px" />
-                    <i class="side up l" style="--t:8px" />
-                    <i class="side up r" style="--t:8px" />
-                  </>
-                )}
-
-                {p.id === 'battery' && (
-                  <>
-                    <div class="face block-face">
-                      <svg viewBox="0 0 300 104" class="size-full">
-                        {[0, 1, 2].map((i) => (
-                          <rect x={12 + i * 94} y="12" width="88" height="80" rx="6" class="ln" />
-                        ))}
-                        <path d="M56 46v12M50 52h12" class="ln accent" />
-                        <text x="150" y="58" text-anchor="middle" class="lbl">
-                          Li-ion
-                        </text>
-                      </svg>
-                    </div>
-                    <i class="side down f" style="--t:6px" />
-                    <i class="side down r" style="--t:6px" />
-                  </>
-                )}
-
-                {p.id === 'board' && (
-                  <>
-                    <div class="face board-face">
-                      <svg viewBox="0 0 392 140" class="size-full">
-                        {traces.map((t) => (
-                          <path d={t.d} class:list={['ln thin', t.accent && 'accent']} />
-                        ))}
-                        {[
-                          [8, 8],
-                          [384, 8],
-                          [8, 132],
-                          [384, 132],
-                        ].map(([cx, cy]) => (
-                          <circle cx={cx} cy={cy} r="3" class="ln" />
-                        ))}
-                      </svg>
-                    </div>
-                    <i class="side down f" style="--t:3px" />
-                    <i class="side down r" style="--t:3px" />
-                    {childrenOf('board').map((c) => (
-                      <div class:list={['part', `part-${c.id}`]} data-part={c.id} style={box(c)}>
-                        {c.id === 'ssd' && (
-                          <div class="face block-face">
-                            <svg viewBox="0 0 96 30" class="size-full">
-                              <rect x="8" y="7" width="26" height="16" rx="2" class="ln" />
-                              <rect x="40" y="7" width="26" height="16" rx="2" class="ln" />
-                              <path d="M80 6v18M86 6v18" class="ln thin" />
-                            </svg>
-                          </div>
-                        )}
-                        {c.id === 'chip' && (
-                          <div class="face chip-face">
-                            <svg viewBox="0 0 62 62" class="size-full">
-                              <rect x="15" y="15" width="32" height="32" rx="4" class="die" />
-                              {Array.from({ length: 6 }, (_, i) => (
-                                <path d={`M${12 + i * 7.6} 4v6M${12 + i * 7.6} 52v6M4 ${12 + i * 7.6}h6M52 ${12 + i * 7.6}h6`} class="ln thin" />
-                              ))}
-                            </svg>
-                          </div>
-                        )}
-                        {c.id === 'ram' && (
-                          <div class="face" style="background:none;border:0">
-                            <svg viewBox="0 0 58 108" class="size-full">
-                              {[0, 1].map((i) => (
-                                <g>
-                                  <rect x={i * 31} y="0" width="27" height="108" rx="3" class="stick" />
-                                  {[0, 1, 2, 3].map((j) => (
-                                    <rect x={i * 31 + 6} y={10 + j * 24} width="15" height="17" rx="1.5" class="ln" />
-                                  ))}
-                                </g>
-                              ))}
-                            </svg>
-                          </div>
-                        )}
-                        {c.id === 'fan' && (
-                          <div class="face fan-face">
-                            <svg viewBox="0 0 84 84" class="size-full">
-                              <circle cx="42" cy="42" r="39" class="ln" />
-                              <g class="blades">
-                                {Array.from({ length: 9 }, (_, i) => (
-                                  <path d="M42 42 C 46 30, 56 22, 66 22 C 60 30, 52 36, 42 42 Z" class="blade" transform={`rotate(${i * 40} 42 42)`} />
-                                ))}
-                              </g>
-                              <circle cx="42" cy="42" r="9" class="hub" />
-                            </svg>
-                          </div>
-                        )}
-                        {c.label && (
-                          <span class:list={["tag", c.side === "left" && "left"]} data-tag style={`left:${c.anchor?.[0] ?? 100}%;top:${c.anchor?.[1] ?? 50}%`}>
-                            <span class="tag-dot" />
-                            <span class="tag-line" />
-                            <span class="tag-text">{c.label}</span>
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </>
-                )}
-
-                {p.id === 'topcase' && (
-                  <>
-                    <div class="face top-face">
-                      <svg viewBox={`0 0 ${W} ${H}`} class="size-full">
-                        {keys.map((k) => (
-                          <rect x={k.x} y={k.y} width={k.w} height={k.h} rx="2.5" class="key" />
-                        ))}
-                        <rect x={W / 2 - 74} y="186" width="148" height="84" rx="8" class="ln" />
-                      </svg>
-                    </div>
-                    <i class="side down f" style="--t:2px" />
-                    <i class="side down r" style="--t:2px" />
-                  </>
-                )}
-
-                {/* Tapa: carcasa exterior arriba y pantalla debajo (gira sobre la bisagra) */}
-                {p.id === 'lid' && (
-                  <>
-                    <div class="face lid-shell" />
-                    <div class="face lid-screen">
-                      <svg viewBox={`0 0 ${W} ${H}`} class="size-full">
-                        <rect x="20" y="16" width={W - 40} height={H - 32} rx="6" class="panel" />
-                        {code.flat().map((s) => (
-                          <rect x={s.x} y={s.y} width={s.w} height="5" rx="2.5" class:list={['code', s.accent && 'accent-fill']} />
-                        ))}
-                      </svg>
-                    </div>
-                    <i class="side up f" style="--t:4px" />
-                    <i class="side up l" style="--t:4px" />
-                    <i class="side up r" style="--t:4px" />
-                  </>
-                )}
-
-                {p.label && (
-                  <span class:list={["tag", p.side === "left" && "left"]} data-tag style={`left:${p.anchor?.[0] ?? 100}%;top:${p.anchor?.[1] ?? 50}%`}>
-                    <span class="tag-dot" />
-                    <span class="tag-line" />
-                    <span class="tag-text">{p.label}</span>
-                  </span>
-                )}
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Progreso -->
-    <div class="progress absolute inset-x-0 bottom-0 h-px bg-white/10" aria-hidden="true">
+    <!-- Contador y progreso -->
+    <p class="counter absolute top-24 right-6 font-mono text-xs tracking-[0.16em] text-white/60 tabular-nums sm:right-10" aria-hidden="true">
+      <span data-counter>01</span> / {pad(stages.length)}
+    </p>
+    <div class="absolute inset-x-0 bottom-0 h-px bg-white/10" aria-hidden="true">
       <div class="bar h-full origin-left bg-[#2997ff]"></div>
     </div>
   </div>
+
+  <!-- Versión estática (movimiento reducido o sin JS) -->
+  <ol class="still mx-auto max-w-6xl space-y-20 px-5 py-24 sm:px-8">
+    {
+      stages.map((s, i) => (
+        <li class="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+          <Picture
+            src={s.image}
+            alt={s.alt}
+            formats={['avif', 'webp']}
+            widths={[640, 1024, 1600]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading="lazy"
+            class="aspect-[16/10] w-full rounded-card object-cover"
+            style={`object-position:${s.focus ?? '50% 50%'}`}
+            pictureAttributes={{ class: i % 2 === 1 ? 'md:order-2' : '' }}
+          />
+          <div>
+            <p class="font-mono text-xs tracking-[0.16em] text-[#64b5ff] uppercase">{s.kicker}</p>
+            <h3 class="mt-3 text-3xl font-semibold tracking-[-0.03em] text-balance sm:text-4xl">{s.title}</h3>
+            <p class="mt-3 text-lg leading-relaxed text-white/75">{s.text}</p>
+            {s.link && (
+              <a href={url(s.link.href)} class="mt-5 inline-flex text-sm font-medium text-[#64b5ff]">
+                {s.link.label} →
+              </a>
+            )}
+            <p class="mt-5 font-mono text-[10px] text-white/45">
+              Foto:{' '}
+              <a href={s.credit.url} target="_blank" rel="noopener" class="hover:text-white hover:underline">
+                {s.credit.author} · Unsplash
+              </a>
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
 </section>
 
 <style>
   .teardown {
-    height: 480svh;
-    --metal-1: #3b3f47;
-    --metal-2: #24272d;
-    --edge-front: #2b2e35;
-    --edge-side: #1c1e23;
-    --edge-inner: #33363d;
-    --ink-line: rgb(255 255 255 / 0.16);
-    --accent-line: #2997ff;
+    height: 620svh;
   }
-
-  /* ---------- Escena ---------- */
-  .glow {
-    background: radial-gradient(55% 50% at 55% 45%, rgb(41 151 255 / 0.12), transparent 70%);
-  }
-  .fit {
-    transform: translate(calc(-50% + var(--shift, 0px)), -50%) scale(var(--k));
-    perspective: 2600px;
-    perspective-origin: 50% 30%;
-  }
-  .scene,
-  .part {
-    position: absolute;
-    transform-style: preserve-3d;
-  }
-  .scene {
-    inset: 0;
-    will-change: transform;
-  }
-  .part {
-    will-change: transform;
-  }
-  .face {
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    border: 1px solid var(--ink-line);
-  }
-  .base-face {
-    background: linear-gradient(135deg, #1a1c21, #121317);
-  }
-  .block-face {
-    background: linear-gradient(135deg, #2c3037, #1f2227);
-    border-radius: 6px;
-  }
-  .board-face {
-    background: linear-gradient(135deg, #12161b, #0d1014);
-    border-radius: 6px;
-  }
-  .chip-face {
-    background: #1e2127;
-    border-radius: 6px;
-  }
-  .fan-face {
-    border-radius: 999px;
-    background: #15171b;
-  }
-  .top-face {
-    background: linear-gradient(135deg, var(--metal-1), var(--metal-2));
-  }
-  .lid-shell {
-    transform: translateZ(4px);
+  /* Oscurece la foto donde va el texto: abajo en móvil, a la izquierda en escritorio */
+  .scrim {
     background:
-      radial-gradient(40% 40% at 50% 50%, rgb(255 255 255 / 0.06), transparent 70%),
-      linear-gradient(135deg, #4a4f58, #2a2d33);
-    backface-visibility: hidden;
+      linear-gradient(to top, rgb(5 5 6 / 0.92) 0%, rgb(5 5 6 / 0.55) 38%, rgb(5 5 6 / 0) 65%),
+      linear-gradient(to bottom, rgb(5 5 6 / 0.55), rgb(5 5 6 / 0) 22%);
   }
-  .lid-screen {
-    transform: rotateX(180deg);
-    background: #0b0c0f;
-    backface-visibility: hidden;
-  }
-
-  /* Grosor: planos laterales que suben (paredes) o bajan (canto de un bloque) */
-  .side {
-    position: absolute;
-    display: block;
-    background: var(--edge-front);
-  }
-  .side.f,
-  .side.b {
-    left: 0;
-    width: 100%;
-    height: var(--t);
-    transform-origin: top;
-  }
-  .side.f {
-    top: 100%;
-  }
-  .side.b {
-    top: 0;
-    background: var(--edge-inner);
-  }
-  .side.l,
-  .side.r {
-    top: 0;
-    height: 100%;
-    width: var(--t);
-    transform-origin: left;
-  }
-  .side.l {
-    left: 0;
-    background: var(--edge-inner);
-  }
-  .side.r {
-    left: 100%;
-    background: var(--edge-side);
-  }
-  .up.f,
-  .up.b {
-    transform: rotateX(90deg);
-  }
-  .down.f {
-    transform: rotateX(-90deg);
-  }
-  .up.l,
-  .up.r {
-    transform: rotateY(-90deg);
-  }
-  .down.r {
-    transform: rotateY(90deg);
-  }
-  .part-lid .side.f,
-  .part-lid .side.r,
-  .part-lid .side.l {
-    background: #3a3e46;
-  }
-  .part-base .side.f {
-    border-radius: 0 0 6px 6px;
-  }
-
-  /* Trazos SVG */
-  svg {
-    overflow: visible;
-  }
-  .ln {
-    fill: none;
-    stroke: var(--ink-line);
-    stroke-width: 1;
-  }
-  .ln.thin {
-    stroke-width: 0.8;
-  }
-  .ln.accent {
-    stroke: var(--accent-line);
-    stroke-opacity: 0.8;
-  }
-  .lbl {
-    fill: rgb(255 255 255 / 0.35);
-    font: 500 11px var(--font-mono);
-    letter-spacing: 0.2em;
-  }
-  .key {
-    fill: #1c1e23;
-    stroke: rgb(255 255 255 / 0.06);
-  }
-  .die {
-    fill: #2a3240;
-    stroke: var(--accent-line);
-    stroke-opacity: 0.7;
-  }
-  .stick {
-    fill: #20242b;
-    stroke: var(--ink-line);
-  }
-  .blade {
-    fill: rgb(255 255 255 / 0.1);
-    stroke: rgb(255 255 255 / 0.18);
-    stroke-width: 0.6;
-  }
-  .hub {
-    fill: #2a2d33;
-    stroke: var(--ink-line);
-  }
-  .blades {
-    transform-origin: 42px 42px;
-    animation: spin 2.4s linear infinite;
-  }
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
+  @media (min-width: 1024px) {
+    .scrim {
+      background:
+        linear-gradient(to right, rgb(5 5 6 / 0.9) 0%, rgb(5 5 6 / 0.6) 32%, rgb(5 5 6 / 0) 62%),
+        linear-gradient(to bottom, rgb(5 5 6 / 0.5), rgb(5 5 6 / 0) 20%);
     }
   }
-  .panel {
-    fill: #07090c;
-  }
-  .code {
-    fill: rgb(255 255 255 / 0.16);
-  }
-  .accent-fill {
-    fill: var(--accent-line);
-    fill-opacity: 0.75;
-  }
-
-  /* Etiquetas: siempre de frente a la pantalla (el script deshace las rotaciones) */
-  .tag {
-    position: absolute;
-    width: 0;
-    height: 0;
-    transform-origin: 0 0;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .tag-dot {
-    position: absolute;
-    left: -3.5px;
-    top: -3.5px;
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: var(--accent-line);
-    box-shadow: 0 0 0 3px rgb(41 151 255 / 0.25);
-  }
-  .tag-line {
-    position: absolute;
-    left: 4px;
-    top: -0.5px;
-    width: 34px;
-    height: 1px;
-    background: rgb(255 255 255 / 0.45);
-  }
-  .tag.left .tag-line {
-    left: auto;
-    right: 4px;
-  }
-  .tag.left .tag-text {
-    left: auto;
-    right: 44px;
-  }
-  .tag-text {
-    position: absolute;
-    left: 44px;
-    top: 0;
-    transform: translateY(-50%);
-    white-space: nowrap;
-    font: 500 13px/1 var(--font-mono);
-    letter-spacing: 0.04em;
-    color: rgb(255 255 255 / 0.9);
-  }
-
-  /* ---------- Textos ---------- */
-  .copy {
-    flex: none;
-    min-height: 36svh;
-  }
-  :global(html.js) .stages {
-    display: grid;
-  }
-  :global(html.js) .stage {
+  .stage {
     grid-area: 1 / 1;
-    opacity: 0;
-    will-change: opacity, transform;
+    align-self: end;
   }
-  :global(html.js) .stage:first-child {
-    opacity: 1;
+  @media (min-width: 1024px) {
+    .stage {
+      align-self: center;
+    }
   }
   .stage:focus-within {
     opacity: 1 !important;
@@ -546,111 +147,59 @@ const traces = Array.from({ length: 16 }, (_, i) => {
   .bar {
     transform: scaleX(var(--p));
   }
-  @media (min-width: 1024px) {
-    .copy {
-      min-height: 0;
-    }
-  }
 
-  /* ---------- Sin animaciones: vista explosionada estática y textos en lista ---------- */
-  @media (prefers-reduced-motion: reduce) {
-    .teardown {
-      height: auto;
-    }
-    .stick {
-      position: relative;
-      height: auto;
-      padding-block: 4rem;
-    }
-    .viewport {
-      flex: none;
-      height: 70svh;
-    }
-    @media (min-width: 1024px) {
-      .viewport {
-        flex: 1;
-        position: sticky;
-        top: 0;
-        height: 100svh;
-      }
-    }
-    :global(html.js) .stages {
-      display: block;
-    }
-    :global(html.js) .stage {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-    .stage + .stage {
-      margin-top: 2.5rem;
-    }
-    .progress {
-      display: none;
-    }
+  /* Por defecto (sin JS) solo la versión estática */
+  .animated {
+    display: none;
+  }
+  :global(html.js) .teardown .animated {
+    display: block;
+  }
+  :global(html.js) .teardown .still {
+    display: none;
   }
   :global(html:not(.js)) .teardown {
     height: auto;
   }
-  :global(html:not(.js)) .stick {
-    position: relative;
-    height: auto;
-  }
-  :global(html:not(.js)) .viewport {
-    height: 60svh;
-    flex: none;
-  }
-  @media (min-width: 1024px) {
-    :global(html:not(.js)) .viewport {
-      flex: 1;
-      position: sticky;
-      top: 0;
-      height: 100svh;
+
+  @media (prefers-reduced-motion: reduce) {
+    .teardown {
+      height: auto !important;
     }
-  }
-  :global(html:not(.js)) .stage + .stage {
-    margin-top: 2.5rem;
+    :global(html.js) .teardown .animated {
+      display: none;
+    }
+    :global(html.js) .teardown .still {
+      display: block;
+    }
   }
 </style>
 
 <script>
-  import { camera, parts, stages } from '@/data/teardown';
-  import { createCss3dRenderer, fade, type TeardownRenderer } from '@/lib/teardown-renderer';
+  import { createPhotoRenderer, fade, type TeardownRenderer } from '@/lib/teardown-renderer';
   import { prefersReducedMotion, scrollProgress } from '@/lib/scroll-progress';
 
   const root = document.querySelector<HTMLElement>('[data-teardown]')!;
-  const viewport = root.querySelector<HTMLElement>('[data-viewport]')!;
   const stageEls = [...root.querySelectorAll<HTMLElement>('[data-stage]')];
+  const counter = root.querySelector<HTMLElement>('[data-counter]')!;
 
-  // Para usar otro renderizador (p. ej. frames en <canvas>), cámbialo aquí.
-  const renderer: TeardownRenderer = createCss3dRenderer(root, parts);
-
-  // Escala la escena para que la vista explosionada quepa en el hueco disponible
-  const fit = () => {
-    // En pantallas estrechas se deja hueco a la derecha para las etiquetas
-    const narrow = viewport.clientWidth < 640;
-    const k = Math.min(1.1, viewport.clientWidth / (camera.fit.width * (narrow ? 1.3 : 1)), viewport.clientHeight / camera.fit.height);
-    root.style.setProperty('--shift', narrow ? `${Math.round(-viewport.clientWidth * 0.09)}px` : '0px');
-    root.style.setProperty('--k', k.toFixed(3));
-    root.style.setProperty('--tag-scale', Math.min(1.8, 0.85 / k).toFixed(3));
-  };
-  fit();
-  new ResizeObserver(fit).observe(viewport);
+  // Para usar otro renderizador (p. ej. un vídeo o frames en <canvas>), cámbialo aquí.
+  const renderer: TeardownRenderer = createPhotoRenderer(root);
 
   scrollProgress(root, {
     reducedValue: 1,
     onProgress(p) {
+      if (prefersReducedMotion()) return;
       renderer.render(p);
-      const still = prefersReducedMotion();
+      let current = 0;
       stageEls.forEach((el, i) => {
-        if (still) {
-          el.style.removeProperty('opacity');
-          el.style.removeProperty('transform');
-          return;
-        }
-        const o = fade(p, stages[i].from, stages[i].to);
+        const o = fade(p, Number(el.dataset.from), Number(el.dataset.to));
+        if (p >= Number(el.dataset.from)) current = i;
         el.style.opacity = o.toFixed(3);
         el.style.transform = `translateY(${((1 - o) * 14).toFixed(1)}px)`;
+        el.style.visibility = o === 0 ? 'hidden' : 'visible';
       });
+      counter.textContent = String(current + 1).padStart(2, '0');
     },
   });
 </script>

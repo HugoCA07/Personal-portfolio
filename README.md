@@ -5,7 +5,7 @@ Mi portfolio personal, hecho con [Astro](https://astro.build) y [Tailwind CSS](h
 **En línea:** https://hugoca07.github.io/Personal-portfolio/
 
 - Hero con fotografía de paisaje y animación ligada al scroll.
-- Escena "Por dentro": un portátil que se abre y se desmonta pieza a pieza al hacer scroll (CSS 3D, sin librerías).
+- Escena "Por dentro": un portátil real, de cerrado a desmontado, contado con fotografías que se funden al hacer scroll.
 - Experiencia como técnico de sistemas, stack con niveles reales y trayectoria.
 - Proyectos como colección de contenido en Markdown, con portada, galería y vídeo opcionales.
 - Header flotante con estilo *liquid glass*, modo claro y oscuro, responsive y accesible (respeta "reducir movimiento").

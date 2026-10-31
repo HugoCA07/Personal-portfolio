@@ -33,10 +33,9 @@ Las instrucciones principales del proyecto (comandos, estructura, convenciones d
 - **`base: '/Personal-portfolio'`:** un `href="/..."` escrito a mano funciona en `npm run dev` con otra ruta, pero da 404 en GitHub Pages. Usa siempre `url()` de `src/lib/url.ts`.
 - **YAML en el frontmatter:** dentro de `{ label: X, value: ... }` una coma corta el valor. Si el valor lleva coma, ponlo entre comillas: `value: 'PC, tablet y móvil'`.
 - **Rejillas en móvil:** una rejilla sin columnas definidas y con texto `truncate`/`nowrap` ensancha la página. Usa `grid-cols-[minmax(0,1fr)]` y `min-w-0`.
-- **Etiquetas de la escena 3D:** se orientan hacia la pantalla deshaciendo las rotaciones de la escena y de su pieza (`teardown-renderer.ts`). Si añades rotaciones nuevas a la cámara o a una pieza, el cálculo inverso ya las tiene en cuenta; si cambias el orden de las rotaciones, hay que cambiarlo también en la inversa.
-- **Contenido pendiente:** hay `TODO(Hugo)` en los Markdown de Diviflex, Autoescuela Máxima y Web de Bricolaje. Pregunta antes de rellenarlos y no inventes datos.
+- **Contenido pendiente:** hay `TODO(Hugo)` en los Markdown de Diviflex y Autoescuela Máxima. Pregunta antes de rellenarlos y no inventes datos.
 
 ### Verificación visual
 
 - Para revisar visualmente se han usado capturas de Chrome headless vía DevTools Protocol (scripts temporales, no versionados).
-- La escena del portátil hay que revisarla en varios puntos del progreso (0, 0,2, 0,5, 0,8 y 1), a 390 y 1440 px, y también con `prefers-reduced-motion`.
+- La escena del portátil hay que revisarla en varios puntos del progreso (uno por foto), a 390 y 1440 px, y también con `prefers-reduced-motion`. Comprueba que el texto se lee sobre cada foto (lo oscurece `.scrim`).

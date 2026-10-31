@@ -32,7 +32,7 @@ src/
 ├── content/projects/*.md   # Un Markdown por proyecto (colección de contenido)
 ├── content.config.ts       # Esquema Zod de la colección `projects` (incluye imágenes y vídeo)
 ├── lib/                    # Helpers: proyectos, url(), scroll-progress, teardown-renderer, interacciones, foto
-├── assets/                 # Imágenes optimizadas en build (hero, projects/<slug>/, hugo.jpg)
+├── assets/                 # Imágenes optimizadas en build (hero, teardown/, projects/<slug>/, hugo.jpg)
 ├── layouts/BaseLayout.astro# <head>, SEO, JSON-LD, tema, header/footer, animaciones
 ├── components/
 │   ├── sections/           # Hero, LaptopTeardown, About, Experience, Projects, Skills, Journey, Contact
@@ -68,9 +68,10 @@ src/
 - **Animaciones ligadas al scroll:** usa `scrollProgress()` de `src/lib/scroll-progress.ts`. Escribe `--p` (0→1) en una sección alta con contenido `sticky`, solo calcula mientras la sección está en pantalla y respeta `prefers-reduced-motion`. Lo usan el hero y la escena del portátil.
 - **Hero:** foto en `src/assets/hero-mountains.jpg` (`<Picture>`). Si cambias la foto, actualiza el crédito en `Hero.astro`.
 - **Escena del portátil (`LaptopTeardown.astro`):**
-  - Tiempos, movimientos, etiquetas y textos de cada pieza están en `src/data/teardown.ts`. Ejes: x a la derecha, y hacia el frente, z hacia arriba.
-  - El pintado está en `src/lib/teardown-renderer.ts`, detrás de la interfaz `TeardownRenderer`. Hoy es CSS 3D; podría sustituirse por frames en `<canvas>`.
-  - En móvil, las piezas `detail` no se animan por separado. Con movimiento reducido se ve la vista explosionada estática.
+  - Son **fotografías reales** de Unsplash (`src/assets/teardown/`), no un modelo ni una ilustración: no la sustituyas por dibujos, CSS 3D o modelos 3D.
+  - Fotos, tramos de progreso, encuadre (`focus`), crédito y textos están en `src/data/teardown.ts`.
+  - El pintado está en `src/lib/teardown-renderer.ts`, detrás de la interfaz `TeardownRenderer`: las fotos se funden y hacen un acercamiento lento. Podría sustituirse por un vídeo o frames.
+  - Con movimiento reducido o sin JS se ve una lista estática de foto + texto.
 - **Header:** píldora *liquid glass* (`.glass` en `Header.astro`). Sobre secciones con `data-dark` pasa a cristal oscuro.
 - **Aparición:** `data-reveal` (y opcionalmente `style="--delay:80ms"`). No lo pongas en el mismo elemento que tiene transiciones de hover; envuélvelo.
 - **Micro-interacciones** (`src/lib/interactions.ts`):

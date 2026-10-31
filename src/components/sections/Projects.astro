@@ -2,13 +2,14 @@
 import Section from '@/components/ui/Section.astro';
 import FeaturedProject from '@/components/ui/FeaturedProject.astro';
 import ProjectCard from '@/components/ui/ProjectCard.astro';
+import CourseList from '@/components/ui/CourseList.astro';
 import { getProjects } from '@/lib/projects';
 
-// El primer proyecto destacado ocupa el escaparate; el resto, tarjetas.
-const featured = await getProjects((p) => p.data.featured);
-const [hero, ...restFeatured] = featured;
-const more = (await getProjects((p) => !p.data.featured)).slice(0, Math.max(0, 4 - restFeatured.length));
-const cards = [...restFeatured, ...more];
+// Tarjetas grandes solo para proyectos con historia (propios y de diseño);
+// los trabajos de clase van en una lista compacta.
+const featured = await getProjects((p) => p.data.featured && p.data.category !== 'course');
+const [hero, ...cards] = featured;
+const courses = await getProjects((p) => p.data.category === 'course');
 const total = (await getProjects()).length;
 ---
 
@@ -16,7 +17,7 @@ const total = (await getProjects()).length;
   id="proyectos"
   eyebrow="Proyectos"
   title="Construido desde cero. <span class='text-muted'>Pieza a pieza.</span>"
-  intro="Una selección de lo que he hecho: motores de juego, aplicaciones de escritorio y la web. Cada proyecto incluye su ficha técnica."
+  intro="Una selección de lo que he hecho: motores de juego, aplicaciones de escritorio, la web y diseño de interfaces."
 >
   <div class="space-y-5">
     {hero && <FeaturedProject project={hero} />}
@@ -24,6 +25,18 @@ const total = (await getProjects()).length;
       {cards.map((p, i) => <ProjectCard project={p} delay={(i % 2) * 80} />)}
     </div>
   </div>
+
+  {
+    courses.length > 0 && (
+      <div class="mt-24">
+        <div class="mb-6 flex items-baseline justify-between gap-4" data-reveal>
+          <h3 class="eyebrow">Formación · DAW</h3>
+          <p class="text-sm text-muted">Repositorios de clase</p>
+        </div>
+        <CourseList courses={courses} />
+      </div>
+    )
+  }
 
   <div class="mt-14 flex justify-center" data-reveal>
     <a

@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import PixelWorld from '@/components/ui/PixelWorld.astro';
 import SpecSheet from '@/components/ui/SpecSheet.astro';
 import { projectUrl, type Project } from '@/lib/projects';
@@ -8,7 +9,8 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, summary, specs, stack, status, year, accent } = project.data;
+const { title, summary, specs, stack, status, year, accent, cover, coverAlt } = project.data;
+const meta = ['Proyecto destacado', year, status].filter(Boolean).join(' · ');
 ---
 
 <div data-reveal>
@@ -19,17 +21,38 @@ const { title, summary, specs, stack, status, year, accent } = project.data;
   >
     <div class="absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_80%_0%,#1d3b2a_0%,#0a0f0c_55%,#050706_100%)]"></div>
 
-    <!-- Terreno procedural -->
-    <PixelWorld
-      seed={2007}
-      class="absolute inset-x-0 bottom-0 -z-10 h-[46%] w-full opacity-90 transition-transform duration-[1.6s] ease-(--ease-apple) group-hover:scale-[1.03] lg:h-[58%]"
-    />
-    <div class="absolute inset-x-0 bottom-0 -z-10 h-[46%] bg-linear-to-t from-black/60 to-transparent lg:h-[58%]"></div>
+    {
+      cover ? (
+        <>
+          {/* Portada del proyecto a sangre */}
+          <Picture
+            src={cover}
+            alt={coverAlt ?? `Imagen de ${title}`}
+            formats={['avif', 'webp']}
+            widths={[800, 1200, 1800]}
+            sizes="(min-width: 1152px) 1152px, 100vw"
+            loading="lazy"
+            class="size-full object-cover transition-transform duration-[1.6s] ease-(--ease-apple) group-hover:scale-[1.03]"
+            pictureAttributes={{ class: 'absolute inset-0 -z-10' }}
+          />
+          <div class="absolute inset-0 -z-10 bg-linear-to-b from-black/75 via-black/30 to-black/10" />
+        </>
+      ) : (
+        <>
+          {/* Sin portada: terreno procedural */}
+          <PixelWorld
+            seed={2007}
+            class="absolute inset-x-0 bottom-0 -z-10 h-[46%] w-full opacity-90 transition-transform duration-[1.6s] ease-(--ease-apple) group-hover:scale-[1.03] lg:h-[58%]"
+          />
+          <div class="absolute inset-x-0 bottom-0 -z-10 h-[46%] bg-linear-to-t from-black/60 to-transparent lg:h-[58%]" />
+        </>
+      )
+    }
 
     <div class="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:p-14">
       <div>
         <p class="font-mono text-[11px] tracking-[0.16em] text-white/50 uppercase">
-          Proyecto destacado · {year} · {status}
+          {meta}
         </p>
         <h3 class="mt-5 text-5xl font-semibold tracking-[-0.04em] sm:text-7xl">{title}</h3>
         <p class="mt-5 max-w-lg text-lg leading-relaxed text-white/70">{summary}</p>

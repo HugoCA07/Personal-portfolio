@@ -1,0 +1,51 @@
+---
+/**
+ * Vídeo corto en bucle, sin sonido, que solo se descarga al acercarse a la pantalla.
+ * Con `prefers-reduced-motion` no se reproduce solo: muestra controles.
+ */
+import { getImage } from 'astro:assets';
+
+interface Props {
+  src: string;
+  poster?: ImageMetadata;
+  label: string;
+  class?: string;
+}
+
+const { src, poster, label, class: className } = Astro.props;
+const posterUrl = poster ? (await getImage({ src: poster, width: 1600, format: 'webp' })).src : undefined;
+const type = src.endsWith('.webm') ? 'video/webm' : 'video/mp4';
+---
+
+<video
+  class:list={['lazy-video block w-full bg-black object-cover', className]}
+  data-src={src}
+  data-type={type}
+  poster={posterUrl}
+  aria-label={label}
+  muted
+  loop
+  playsinline
+  preload="none"
+>
+</video>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const { target, isIntersecting } of entries) {
+        const video = target as HTMLVideoElement;
+        if (isIntersecting && !video.src) {
+          video.src = video.dataset.src!;
+          if (reduced.matches) video.controls = true;
+        }
+        if (reduced.matches) continue;
+        if (isIntersecting) video.play().catch(() => (video.controls = true));
+        else video.pause();
+      }
+    },
+    { rootMargin: '200px 0px' },
+  );
+  document.querySelectorAll<HTMLVideoElement>('video.lazy-video').forEach((v) => io.observe(v));
+</script>

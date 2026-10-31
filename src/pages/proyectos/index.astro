@@ -2,24 +2,29 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import ProjectCard from '@/components/ui/ProjectCard.astro';
+import CourseList from '@/components/ui/CourseList.astro';
 import { getProjects } from '@/lib/projects';
 
-const groups = [
-  { title: 'Proyectos', items: await getProjects((p) => p.data.category === 'project') },
-  { title: 'Formación · DAW', items: await getProjects((p) => p.data.category === 'course') },
+const own = await getProjects((p) => p.data.category === 'project');
+const design = await getProjects((p) => p.data.category === 'design');
+const courses = await getProjects((p) => p.data.category === 'course');
+
+const cardGroups = [
+  { title: 'Proyectos', items: own },
+  { title: 'Diseño', items: design },
 ].filter((g) => g.items.length > 0);
 ---
 
-<BaseLayout title="Proyectos" description="Todos los proyectos de Hugo Cruz Aranda: C++, Java, JavaScript, PHP y más.">
+<BaseLayout title="Proyectos" description="Proyectos de Hugo Cruz Aranda: C++, Java, PHP, diseño de interfaces en Figma y trabajos del ciclo de DAW.">
   <Section
     eyebrow="Proyectos"
     title="Todos los proyectos."
-    intro="Proyectos propios y trabajos del ciclo de Desarrollo de Aplicaciones Web, cada uno con su ficha técnica."
+    intro="Proyectos propios, diseño de interfaces y los trabajos del ciclo de Desarrollo de Aplicaciones Web."
     class="pt-36 sm:pt-44"
   >
     <div class="space-y-20">
       {
-        groups.map((g) => (
+        cardGroups.map((g) => (
           <div>
             <h2 class="eyebrow mb-6" data-reveal>
               {g.title} · {g.items.length}
@@ -31,6 +36,16 @@ const groups = [
             </div>
           </div>
         ))
+      }
+      {
+        courses.length > 0 && (
+          <div>
+            <h2 class="eyebrow mb-6" data-reveal>
+              Formación · DAW · {courses.length}
+            </h2>
+            <CourseList courses={courses} />
+          </div>
+        )
       }
     </div>
   </Section>

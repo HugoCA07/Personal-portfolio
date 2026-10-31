@@ -30,7 +30,7 @@ featured: false
 order: 50
 stack: [Astro, TypeScript]
 specs:
-  - { label: Motor, value: TypeScript }
+  - { label: Lenguaje, value: TypeScript }
 repo: https://github.com/HugoCA07/mi-proyecto
 accent: "#0071e3"
 ---

@@ -1,0 +1,191 @@
+---
+import { experience } from '@/data/experience';
+
+const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const parse = (d: string) => d.split('-').map(Number) as [number, number];
+const fmt = (d: string) => {
+  const [y, m] = parse(d);
+  return `${months[m - 1]} ${y}`;
+};
+/** Meses entre dos fechas, ambos incluidos. */
+const duration = (a: string, b: string) => {
+  const [y1, m1] = parse(a);
+  const [y2, m2] = parse(b);
+  return (y2 - y1) * 12 + (m2 - m1) + 1;
+};
+---
+
+<section id="experiencia" class="px-5 py-24 sm:px-8 sm:py-32 lg:py-40">
+  <div class="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+    <!-- Introducción -->
+    <header class="lg:sticky lg:top-28 lg:self-start" data-reveal>
+      <p class="eyebrow mb-4">Experiencia</p>
+      <h2 class="text-4xl leading-[1.05] font-semibold tracking-[-0.035em] text-balance sm:text-6xl">
+        Con las manos dentro del equipo
+      </h2>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+        Antes de dedicarme al desarrollo web trabajé como técnico de sistemas. Abrir equipos, encontrar el fallo y dejarlo funcionando me
+        enseñó a entender un sistema antes de tocarlo.
+      </p>
+    </header>
+
+    <!-- Fichas tipo "informe de trabajo" -->
+    <div class="space-y-8">
+      {
+        experience.map((job) => {
+          const months = duration(job.start, job.end);
+          const fields = [
+            { label: 'Puesto', value: job.role },
+            { label: 'Empresa', value: job.company },
+            { label: 'Lugar', value: job.place },
+            { label: 'Periodo', value: `${fmt(job.start)} – ${fmt(job.end)}` },
+            { label: 'Duración', value: `${months} ${months === 1 ? 'mes' : 'meses'}` },
+            { label: 'Modalidad', value: job.kind },
+          ];
+          return (
+            <div data-reveal>
+              <article class="ticket relative overflow-hidden rounded-[1.75rem] border border-line bg-surface shadow-soft">
+                <header class="flex items-center justify-between gap-4 px-6 py-4 font-mono text-[11px] tracking-[0.14em] text-muted uppercase sm:px-8">
+                  <span class="flex items-center gap-2">
+                    <span class="size-2 rounded-full bg-accent" aria-hidden="true" />
+                    Informe de trabajo
+                  </span>
+                  <span>{job.start.slice(0, 4)}</span>
+                </header>
+
+                <dl class="grid grid-cols-2 border-t border-line sm:grid-cols-3">
+                  {fields.map((f) => (
+                    <div class="field border-line px-6 py-4 sm:px-8">
+                      <dt class="font-mono text-[10px] tracking-[0.14em] text-muted uppercase">{f.label}</dt>
+                      <dd class="mt-1 text-[15px] leading-snug font-medium">{f.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <!-- Corte perforado -->
+                <div class="perforation relative h-px" aria-hidden="true" />
+
+                <div class="relative px-6 py-7 sm:px-8 sm:py-9">
+                  <p class="leading-relaxed text-muted">{job.summary}</p>
+                  <h3 class="mt-8 font-mono text-[10px] tracking-[0.14em] text-muted uppercase">Trabajo realizado</h3>
+                  <ol class="mt-3 divide-y divide-line">
+                    {job.tasks.map((t, i) => (
+                      <li class="task flex items-start gap-4 py-3.5" style={`--i:${i}`}>
+                        <span class="mt-0.5 font-mono text-xs text-muted tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                        <span class="flex-1 leading-snug">{t}</span>
+                        <span class="check mt-0.5 font-mono text-[11px] font-medium text-accent" aria-hidden="true">
+                          OK
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+
+                  <ul class="mt-8 flex flex-wrap gap-2 sm:pr-40" aria-label="Áreas">
+                    {job.areas.map((a) => (
+                      <li class="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] tracking-wide text-muted">{a}</li>
+                    ))}
+                  </ul>
+
+                  <p class="stamp pointer-events-none absolute right-5 bottom-6 font-mono text-xs font-semibold tracking-[0.2em] uppercase sm:right-8 sm:bottom-9">
+                    Completado
+                  </p>
+                </div>
+              </article>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Rejilla de campos con separadores finos */
+  .field {
+    border-bottom-width: 1px;
+  }
+  .field:nth-child(odd) {
+    border-right-width: 1px;
+  }
+  @media (min-width: 640px) {
+    .field:nth-child(odd) {
+      border-right-width: 0;
+    }
+    .field:not(:nth-child(3n)) {
+      border-right-width: 1px;
+    }
+    .field:nth-last-child(-n + 3) {
+      border-bottom-width: 0;
+    }
+  }
+  @media (max-width: 639.98px) {
+    .field:nth-last-child(-n + 2) {
+      border-bottom-width: 0;
+    }
+  }
+
+  /* Línea discontinua con muescas, como un ticket */
+  .perforation {
+    border-top: 1px dashed var(--line);
+    margin-top: -1px;
+  }
+  .perforation::before,
+  .perforation::after {
+    content: '';
+    position: absolute;
+    top: -11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+  }
+  .perforation::before {
+    left: -12px;
+  }
+  .perforation::after {
+    right: -12px;
+  }
+
+  .stamp {
+    color: var(--accent);
+    border: 2px solid currentColor;
+    border-radius: 0.6rem;
+    padding: 0.35rem 0.7rem;
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.4);
+    transition:
+      opacity 0.5s var(--ease-apple),
+      transform 0.5s var(--ease-apple);
+    transition-delay: 1.6s;
+  }
+
+  /* Las tareas se "validan" una a una al entrar en pantalla */
+  .check {
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s ease;
+    transition-delay: calc(var(--i) * 220ms + 400ms);
+  }
+  :global(.is-visible) > .ticket .check,
+  :global(html:not(.js)) .check {
+    opacity: 1;
+    transform: none;
+  }
+  :global(.is-visible) > .ticket .stamp,
+  :global(html:not(.js)) .stamp {
+    opacity: 0.85;
+    transform: rotate(-8deg);
+  }
+
+  /* En móvil el sello no debe tapar las etiquetas */
+  @media (max-width: 639.98px) {
+    .stamp {
+      position: static;
+      display: inline-block;
+      margin-top: 1.5rem;
+    }
+  }
+</style>

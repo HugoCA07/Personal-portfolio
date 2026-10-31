@@ -1,18 +1,17 @@
 ---
 import Section from '@/components/ui/Section.astro';
-import { site } from '@/config/site';
 import { interests, learning } from '@/data/skills';
 
 const stats = [
-  { value: String(site.bornYear), label: 'Año de nacimiento' },
-  { value: String(site.github.publicRepos), label: 'Repos públicos' },
-  { value: '2º', label: 'Desarrollo de Aplicaciones Web' },
+  { value: 'C2', label: 'Inglés · LanguageCert' },
+  { value: '2', label: 'Ciclos de FP: SMR y DAW' },
+  { value: '2º', label: 'DAW, hasta junio de 2027' },
 ];
 
 const terminal = [
   { cmd: 'whoami', out: 'hugo — dev web en formación' },
   { cmd: 'cat stack.txt', out: 'C++  Java  JS  PHP  Python  SQL' },
-  { cmd: './terraforge --seed 2007', out: 'generando mundo… ✓ listo' },
+  { cmd: './terraforge --seed 42', out: 'generando mundo… ✓ listo' },
 ];
 ---
 

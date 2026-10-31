@@ -13,9 +13,9 @@ export interface Milestone {
 
 export const timeline: Milestone[] = [
   {
-    year: '2007',
-    title: 'El comienzo',
-    text: 'Nazco con la curiosidad de saber cómo funciona todo por dentro.',
+    year: '2023',
+    title: 'Sistemas Microinformáticos y Redes',
+    text: 'CFGM en el IES Ramón y Cajal (Tocina y Los Rosales), de septiembre de 2023 a junio de 2025. Me concedieron una beca por buenas calificaciones.',
   },
   {
     year: '2024',
@@ -23,9 +23,14 @@ export const timeline: Milestone[] = [
     text: 'Creo mi cuenta de GitHub y empiezo a programar en serio: C, C++, Python y mis primeras webs.',
   },
   {
+    year: 'Mar–Jun 2025',
+    title: 'Técnico de sistemas (FCT)',
+    text: 'Prácticas en App Informática, en Dos Hermanas: diagnóstico, reparación y mantenimiento de equipos.',
+  },
+  {
     year: '2025',
-    title: '1º de DAW',
-    text: 'Empiezo el ciclo de Desarrollo de Aplicaciones Web: Java, bases de datos, SQL y frontend.',
+    title: 'DAW en el IES Martínez Montañés',
+    text: 'Desarrollo de Aplicaciones Web, de septiembre de 2025 a junio de 2027: Java, bases de datos, SQL y desarrollo web.',
   },
   {
     year: '2026',

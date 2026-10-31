@@ -1,34 +1,43 @@
 /**
- * Stack técnico agrupado por categorías.
- * Para añadir una tecnología, añádela al array `items` de su grupo.
+ * Stack técnico.
+ * - `levels`: tecnologías con nivel declarado (1 básico · 2 intermedio · 3 sólido).
+ * - `skillGroups`: el resto, agrupado por área y sin nivel.
  */
+
+export type Level = 1 | 2 | 3;
+
+export const levelInfo: Record<Level, { label: string; text: string }> = {
+  3: { label: 'Sólido', text: 'Lo uso con soltura en proyectos propios y de clase.' },
+  2: { label: 'Intermedio', text: 'He construido cosas con ello y sigo profundizando.' },
+  1: { label: 'Básico', text: 'Conozco los conceptos y lo he puesto en práctica.' },
+};
+
+export const levels: { level: Level; items: string[] }[] = [
+  { level: 3, items: ['Java', 'C++', 'HTML5', 'CSS3'] },
+  { level: 2, items: ['JavaScript', 'PHP · Laravel', 'Angular', 'Bootstrap', 'Tailwind CSS'] },
+  { level: 1, items: ['JWT y cookies de sesión', "HTTPS con Let's Encrypt", 'Docker'] },
+];
 
 export interface SkillGroup {
   title: string;
-  caption: string;
   items: string[];
 }
 
 export const skillGroups: SkillGroup[] = [
-  {
-    title: 'Lenguajes',
-    caption: 'Lo que escribo',
-    items: ['C++', 'Java', 'JavaScript', 'PHP', 'Python', 'C', 'SQL'],
-  },
-  {
-    title: 'Web',
-    caption: 'Lo que construyo',
-    items: ['HTML', 'CSS', 'Astro', 'Tailwind CSS', 'XML · XSLT · XQuery'],
-  },
+  { title: 'Bases de datos', items: ['MySQL', 'SQL', 'JDBC'] },
   {
     title: 'Herramientas',
-    caption: 'Con lo que trabajo',
-    items: ['Git', 'GitHub', 'MySQL', 'JDBC', 'CMake', 'SFML', 'Java Swing'],
+    items: ['Git', 'GitHub · Pull Requests', 'IntelliJ IDEA', 'VS Code', 'NetBeans', 'Eclipse', 'CMake'],
   },
+  {
+    title: 'Sistemas',
+    items: ['Configuración de redes', 'Montaje de hardware', 'Gestión de sistemas operativos'],
+  },
+  { title: 'También he usado', items: ['Python', 'C', 'Astro', 'XML · XSLT · XQuery', 'SFML', 'Java Swing'] },
 ];
 
 /** Lo que estoy aprendiendo ahora mismo. */
-export const learning = ['C++ moderno', 'Desarrollo web de servidor', 'Inglés'];
+export const learning = ['C++ moderno', 'Desarrollo web de servidor'];
 
 /** Aficiones fuera de la programación. */
 export const interests = ['Informática', 'Paisajes', 'Coches', 'Videojuegos'];

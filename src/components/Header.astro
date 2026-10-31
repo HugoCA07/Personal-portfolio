@@ -11,7 +11,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
     >
       <a href="/" class="text-[15px] font-semibold tracking-tight whitespace-nowrap">{site.name}</a>
 
-      <ul class="hidden items-center gap-1 text-[13px] md:flex">
+      <ul class="hidden items-center gap-1 text-[13px] lg:flex">
         {
           nav.map((item) => (
             <li>
@@ -28,7 +28,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
         <button
           id="menu-button"
           type="button"
-          class="grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5 md:hidden"
+          class="grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5 lg:hidden"
           aria-expanded="false"
           aria-controls="mobile-menu"
           aria-label="Abrir menú"
@@ -44,7 +44,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
     <!-- Menú móvil: panel de cristal flotante -->
     <div
       id="mobile-menu"
-      class="glass pointer-events-none absolute inset-x-0 top-full mt-2 origin-top scale-95 rounded-[1.75rem] p-3 opacity-0 transition-all duration-300 ease-(--ease-apple) md:hidden"
+      class="glass pointer-events-none absolute inset-x-0 top-full mt-2 origin-top scale-95 rounded-[1.75rem] p-3 opacity-0 transition-all duration-300 ease-(--ease-apple) lg:hidden"
       inert
     >
       <ul class="flex flex-col">
@@ -129,5 +129,5 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
   document.addEventListener('click', (e) => !header.contains(e.target as Node) && setOpen(false));
-  matchMedia('(min-width: 768px)').addEventListener('change', () => setOpen(false));
+  matchMedia('(min-width: 1024px)').addEventListener('change', () => setOpen(false));
 </script>

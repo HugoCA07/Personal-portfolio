@@ -1,31 +1,70 @@
 ---
 import Section from '@/components/ui/Section.astro';
-import { skillGroups } from '@/data/skills';
+import { languages } from '@/config/site';
+import { levelInfo, levels, skillGroups } from '@/data/skills';
 ---
 
 <Section
   id="stack"
   eyebrow="Stack"
-  title="Mis herramientas."
-  intro="Las tecnologías con las que trabajo cada día. Unas las domino, otras las estoy aprendiendo."
+  title="Lo que uso, y cuánto lo domino"
+  intro="Sin barras de porcentaje inventadas: tres niveles honestos y, debajo, el resto de herramientas con las que he trabajado."
   class="bg-surface-2/60"
 >
-  <div class="grid gap-5 md:grid-cols-3">
+  <!-- Niveles: escala de tres pasos, de más a menos dominio -->
+  <div class="card overflow-hidden" data-reveal>
+    <div class="grid divide-y divide-line lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+      {
+        levels.map(({ level, items }) => (
+          <div class="p-7 sm:p-9">
+            <div class="flex items-center gap-3">
+              <span class="meter flex items-end gap-1" role="img" aria-label={`Nivel ${level} de 3`}>
+                {[1, 2, 3].map((n) => (
+                  <span class:list={['w-1.5 rounded-full', n <= level ? 'bg-accent' : 'bg-line']} style={`height:${6 + n * 5}px`} />
+                ))}
+              </span>
+              <h3 class="text-xl font-semibold tracking-tight">{levelInfo[level].label}</h3>
+            </div>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{levelInfo[level].text}</p>
+            <ul class="mt-7 space-y-2.5">
+              {items.map((item) => (
+                <li class:list={['leading-snug tracking-tight', level === 3 ? 'text-2xl font-semibold' : level === 2 ? 'text-xl font-medium' : 'text-lg text-ink/80']}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Resto del stack, sin nivel -->
+  <div class="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
     {
       skillGroups.map((g, i) => (
-        <article class="card p-8 sm:p-9" data-reveal style={`--delay:${i * 80}ms`}>
-          <p class="eyebrow">{g.caption}</p>
-          <h3 class="mt-3 text-2xl font-semibold tracking-tight">{g.title}</h3>
-          <ul class="mt-8 divide-y divide-line">
+        <div class="border-t border-ink/15 pt-5" data-reveal style={`--delay:${i * 60}ms`}>
+          <h3 class="eyebrow">{g.title}</h3>
+          <ul class="mt-4 space-y-1.5 text-[15px]">
             {g.items.map((item) => (
-              <li class="flex items-center justify-between py-3 text-[15px]">
-                <span>{item}</span>
-                <span class="size-1.5 rounded-full bg-accent/70" aria-hidden="true" />
-              </li>
+              <li>{item}</li>
             ))}
           </ul>
-        </article>
+        </div>
       ))
     }
+    <div class="border-t border-ink/15 pt-5" data-reveal style={`--delay:${skillGroups.length * 60}ms`}>
+      <h3 class="eyebrow">Idiomas</h3>
+      <ul class="mt-4 space-y-3 text-[15px]">
+        {
+          languages.map((l) => (
+            <li>
+              {l.name} · <span class="font-semibold">{l.level}</span>
+              {'note' in l && <span class="mt-0.5 block text-xs leading-snug text-muted">{l.note}</span>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </Section>

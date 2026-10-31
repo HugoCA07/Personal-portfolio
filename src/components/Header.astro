@@ -87,7 +87,13 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
     background: linear-gradient(180deg, rgb(255 255 255 / 0.45) 0%, rgb(255 255 255 / 0) 45%);
     pointer-events: none;
   }
-  :global([data-theme='dark']) .glass {
+  /* Sobre secciones oscuras (hero, escena del portátil) el cristal pasa a oscuro */
+  header[data-on-dark] {
+    --ink: #f5f5f7;
+    color: var(--ink);
+  }
+  :global([data-theme='dark']) .glass,
+  header[data-on-dark] .glass {
     background: linear-gradient(135deg, rgb(40 40 46 / 0.55), rgb(20 20 24 / 0.35));
     border-color: rgb(255 255 255 / 0.14);
     box-shadow:
@@ -96,7 +102,8 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
       inset 0 0 24px rgb(255 255 255 / 0.04),
       0 10px 34px -10px rgb(0 0 0 / 0.7);
   }
-  :global([data-theme='dark']) .glass::before {
+  :global([data-theme='dark']) .glass::before,
+  header[data-on-dark] .glass::before {
     background: linear-gradient(180deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0) 45%);
   }
 
@@ -130,4 +137,29 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro';
   document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
   document.addEventListener('click', (e) => !header.contains(e.target as Node) && setOpen(false));
   matchMedia('(min-width: 1024px)').addEventListener('change', () => setOpen(false));
+</script>
+
+<script>
+  // Detecta si debajo del header hay una sección oscura ([data-dark]) para adaptar el cristal
+  const head = document.querySelector('header')!;
+  const darks = document.querySelectorAll('[data-dark]');
+  const visible = new Set<Element>();
+  let io: IntersectionObserver | undefined;
+  const watch = () => {
+    io?.disconnect();
+    visible.clear();
+    // Franja fina a la altura del header
+    io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) e.isIntersecting ? visible.add(e.target) : visible.delete(e.target);
+        head.toggleAttribute('data-on-dark', visible.size > 0);
+      },
+      { rootMargin: `-36px 0px -${Math.max(0, innerHeight - 38)}px 0px` },
+    );
+    darks.forEach((el) => io!.observe(el));
+  };
+  if (darks.length) {
+    watch();
+    addEventListener('resize', watch, { passive: true });
+  }
 </script>
